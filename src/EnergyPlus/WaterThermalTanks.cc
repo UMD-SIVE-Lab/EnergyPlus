@@ -903,6 +903,7 @@ namespace WaterThermalTanks {
 		bool Okay;
 		bool bIsVScoil( false ); // indicate if the heat pump WH coil is a variable-speed coil
 		int IHPIndex(0);// coil No for integrated heat pump
+		std::string IHPCoilName("");
 
 		// Following allow for temporary storage of character strings but not saved in main structure
 		Real64 rho; // local fluid density
@@ -1924,7 +1925,12 @@ namespace WaterThermalTanks {
 					} else if ( HPWH.FanPlacement == BlowThru ) {
 						// set fan outlet node variable for use in setting Node(FanOutletNode)%MassFlowRateMax for fan object
 						if ( bIsVScoil ) {
-							HPWH.FanOutletNode = GetCoilInletNodeVariableSpeed(HPWH.DXCoilType, HPWH.DXCoilName, DXCoilErrFlag);
+							if (true == HPWH.bIsIHP){
+								HPWH.FanOutletNode = GetCoilInletNodeIHP(HPWH.DXCoilType, HPWH.DXCoilName, DXCoilErrFlag);
+							}
+							else{
+								HPWH.FanOutletNode = GetCoilInletNodeVariableSpeed(HPWH.DXCoilType, HPWH.DXCoilName, DXCoilErrFlag);
+							}
 						} else {
 							HPWH.FanOutletNode = DXCoil( HPWH.DXCoilNum ).AirInNode;
 						}
@@ -5537,6 +5543,11 @@ namespace WaterThermalTanks {
 			DataLoopNode::NodeData const & HPWHCondWaterInletNode = DataLoopNode::Node(HeatPump.CondWaterInletNode);
 			DataLoopNode::NodeData const & HPWHCondWaterOutletNode = DataLoopNode::Node(HeatPump.CondWaterOutletNode);
 			HPWHCondenserDeltaT = HPWHCondWaterOutletNode.Temp - HPWHCondWaterInletNode.Temp;
+
+			if ((true == HPWaterHeater(Tank.HeatPumpNum).bIsIHP) && (HPWHCondenserDeltaT < 0))
+			{
+				HPWHCondenserDeltaT = 0.0;
+			}
 		}
 		assert( HPWHCondenserDeltaT >= 0 );
 
@@ -7437,28 +7448,34 @@ namespace WaterThermalTanks {
 				if (HeatPump.FanPlacement == BlowThru) {
 					SimulateFanComponents(HeatPump.FanName, FirstHVACIteration, HeatPump.FanNum);
 					SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
-					SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+					if (true == HeatPump.bIsIHP) 
+						SimVariableSpeedCoils("", VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+					else 
+						SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
 				} else {
 					SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
-					SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+					if (true == HeatPump.bIsIHP)
+						SimVariableSpeedCoils("", VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+					else
+						SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
 					SimulateFanComponents(HeatPump.FanName, FirstHVACIteration, HeatPump.FanNum);
 				}
 
 				//set the DWH mode
 				if (true == HeatPump.bIsIHP)
 				{
-					VSCoilNum = IntegratedHeatPumpUnits(VSCoilNum).DWHCoilIndex;
+					VSCoilNum = IntegratedHeatPumpUnits(HeatPump.DXCoilNum).DWHCoilIndex;
 
 					if (VSCoilNum > 0)// if DWH coil exists
 					{
 						if (HeatPump.FanPlacement == BlowThru) {
 							SimulateFanComponents(HeatPump.FanName, FirstHVACIteration, HeatPump.FanNum);
 							SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
-							SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+							SimVariableSpeedCoils("", VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
 						}
 						else {
 							SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
-							SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+							SimVariableSpeedCoils("", VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
 							SimulateFanComponents(HeatPump.FanName, FirstHVACIteration, HeatPump.FanNum);
 						}
 					}

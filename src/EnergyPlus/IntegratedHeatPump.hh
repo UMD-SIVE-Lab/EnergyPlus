@@ -93,7 +93,8 @@ namespace IntegratedHeatPumps {
 		std::string SHDWHWHCoilName;
 		int SHDWHWHCoilIndex; // Index to SHDWH coil, water heating part
 
-		int AirInletNodeNum; // Node Number of the Air Inlet
+		int AirCoolInletNodeNum; // Node Number of the Air cooling coil Inlet
+		int AirHeatInletNodeNum; // Node Number of the Air cooling coil Inlet
 		int AirOutletNodeNum; // Node Number of the Air Outlet
 		int WaterInletNodeNum; // Node Number of the Water Onlet
 		int WaterOutletNodeNum; // Node Number of the Water Outlet
@@ -140,7 +141,8 @@ namespace IntegratedHeatPumps {
 			SCDWHWHCoilIndex(0),
 			SHDWHHeatCoilIndex(0),
 			SHDWHWHCoilIndex(0),
-			AirInletNodeNum(0),
+			AirCoolInletNodeNum(0),
+			AirHeatInletNodeNum(0),
 			AirOutletNodeNum(0),
 			WaterInletNodeNum(0),
 			WaterOutletNodeNum(0),
@@ -202,7 +204,8 @@ namespace IntegratedHeatPumps {
 			std::string const &SHDWHWHCoilType_Num, // Numeric Equivalent for SHDWH Coil Type, water heating part
 			std::string const &SHDWHWHCoilName, // Numeric Equivalent for SHDWH Coil Type, water heating part
 			int const SHDWHWHCoilIndex, // Index to SHDWH coil, water heating part
-			int const AirInletNodeNum, // Node Number of the Air Inlet
+			int const AirCoolInletNodeNum, // Node Number of the Air Inlet
+			int const AirHeatInletNodeNum, // Node Number of the Air Inlet
 			int const AirOutletNodeNum, // Node Number of the Air Outlet
 			int const WaterInletNodeNum, // Node Number of the Water Onlet
 			int const WaterOutletNodeNum, // Node Number of the Water Outlet
@@ -262,7 +265,8 @@ namespace IntegratedHeatPumps {
 			SHDWHWHCoilType(SHDWHWHCoilType_Num), 
 			SHDWHWHCoilName(SHDWHWHCoilName),
 			SHDWHWHCoilIndex(SHDWHWHCoilIndex), 
-			AirInletNodeNum(AirInletNodeNum), 
+			AirCoolInletNodeNum(AirCoolInletNodeNum), 
+			AirHeatInletNodeNum(AirHeatInletNodeNum),
 			AirOutletNodeNum(AirOutletNodeNum),
 			WaterInletNodeNum(WaterInletNodeNum), 
 			WaterOutletNodeNum(WaterOutletNodeNum), 

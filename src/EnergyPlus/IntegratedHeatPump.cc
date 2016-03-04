@@ -188,6 +188,8 @@ namespace EnergyPlus {
 			case IdleMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).SimFlag = false; 
 				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex);
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).SimFlag = false;
 				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex);
 				break; 
@@ -203,8 +205,15 @@ namespace EnergyPlus {
 				{
 					UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex);
 				}
+
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
+
 				break; 
 			case SHMode:
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex);
+
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).SimFlag = true;
 				if (false == IsCallbyWH)
 				{
@@ -241,6 +250,9 @@ namespace EnergyPlus {
 					UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex);
 				}
 
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
+
 				break; 
 			case SCWHMatchWHMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex).SimFlag = true;
@@ -255,6 +267,9 @@ namespace EnergyPlus {
 				{
 					UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex);
 				}
+
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
 
 				break; 
 			case SCDWHMode:
@@ -277,9 +292,15 @@ namespace EnergyPlus {
 					UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilIndex);
 				}
 
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
+
 				break; 
 			case SHDWHElecHeatOffMode:
 			case SHDWHElecHeatOnMode:
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex);
+
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilIndex).SimFlag = true;
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHDWHWHCoilIndex).SimFlag = true;
 				if (false == IsCallbyWH)
@@ -303,6 +324,10 @@ namespace EnergyPlus {
 			default:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).SimFlag = false;
 				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex);
+
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
+
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).SimFlag = false;
 				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex);
 				break; 
@@ -449,22 +474,25 @@ namespace EnergyPlus {
 				IntegratedHeatPumpUnits(DXCoilNum).Name = AlphArray(1);
 				IntegratedHeatPumpUnits(DXCoilNum).IHPtype = "AIRSOURCE_IHP";
 
-				IntegratedHeatPumpUnits(DXCoilNum).AirInletNodeNum = 
+				IntegratedHeatPumpUnits(DXCoilNum).AirCoolInletNodeNum = 
 					GetOnlySingleNode(AlphArray(2), ErrorsFound, CurrentModuleObject, AlphArray(1), NodeType_Air, NodeConnectionType_Inlet, 1, ObjectIsNotParent);
+				IntegratedHeatPumpUnits(DXCoilNum).AirHeatInletNodeNum =
+					GetOnlySingleNode(AlphArray(3), ErrorsFound, CurrentModuleObject, AlphArray(1), NodeType_Air, NodeConnectionType_Inlet, 1, ObjectIsNotParent);
 				IntegratedHeatPumpUnits(DXCoilNum).AirOutletNodeNum = 
-					GetOnlySingleNode(AlphArray(3), ErrorsFound, CurrentModuleObject, AlphArray(1), NodeType_Air, NodeConnectionType_Outlet, 1, ObjectIsNotParent);
+					GetOnlySingleNode(AlphArray(4), ErrorsFound, CurrentModuleObject, AlphArray(1), NodeType_Air, NodeConnectionType_Outlet, 1, ObjectIsNotParent);
 				IntegratedHeatPumpUnits(DXCoilNum).WaterInletNodeNum = 
-					GetOnlySingleNode(AlphArray(4), ErrorsFound, CurrentModuleObject, AlphArray(1), NodeType_Water, NodeConnectionType_Inlet, 2, ObjectIsNotParent);
+					GetOnlySingleNode(AlphArray(5), ErrorsFound, CurrentModuleObject, AlphArray(1), NodeType_Water, NodeConnectionType_Inlet, 2, ObjectIsNotParent);
 				IntegratedHeatPumpUnits(DXCoilNum).WaterOutletNodeNum = 
-					GetOnlySingleNode(AlphArray(5), ErrorsFound, CurrentModuleObject, AlphArray(1), NodeType_Water, NodeConnectionType_Outlet, 2, ObjectIsNotParent);
-				IntegratedHeatPumpUnits(DXCoilNum).WaterTankoutNod =
 					GetOnlySingleNode(AlphArray(6), ErrorsFound, CurrentModuleObject, AlphArray(1), NodeType_Water, NodeConnectionType_Outlet, 2, ObjectIsNotParent);
+				IntegratedHeatPumpUnits(DXCoilNum).WaterTankoutNod =
+					GetOnlySingleNode(AlphArray(7), ErrorsFound, CurrentModuleObject, AlphArray(1), NodeType_Water, NodeConnectionType_Outlet, 2, ObjectIsNotParent);
 
 				TestCompSet(CurrentModuleObject, AlphArray(1), AlphArray(2), AlphArray(3), "Air Nodes");
-				TestCompSet(CurrentModuleObject, AlphArray(1), AlphArray(4), AlphArray(5), "Water Nodes");
+				TestCompSet(CurrentModuleObject, AlphArray(1), AlphArray(3), AlphArray(4), "Air Nodes");
+				TestCompSet(CurrentModuleObject, AlphArray(1), AlphArray(5), AlphArray(6), "Water Nodes");
 				
 				IntegratedHeatPumpUnits(DXCoilNum).SCCoilType = "COIL:COOLING:DX:VARIABLESPEED";
-				IntegratedHeatPumpUnits(DXCoilNum).SCCoilName = AlphArray(7);
+				IntegratedHeatPumpUnits(DXCoilNum).SCCoilName = AlphArray(8);
 				Coiltype = IntegratedHeatPumpUnits(DXCoilNum).SCCoilType;
 				CoilName = IntegratedHeatPumpUnits(DXCoilNum).SCCoilName;
 
@@ -483,7 +511,7 @@ namespace EnergyPlus {
 				}
 				
 				IntegratedHeatPumpUnits(DXCoilNum).SHCoilType = "COIL:HEATING:DX:VARIABLESPEED";
-				IntegratedHeatPumpUnits(DXCoilNum).SHCoilName = AlphArray(8);
+				IntegratedHeatPumpUnits(DXCoilNum).SHCoilName = AlphArray(9);
 				Coiltype = IntegratedHeatPumpUnits(DXCoilNum).SHCoilType;
 				CoilName = IntegratedHeatPumpUnits(DXCoilNum).SHCoilName;
 
@@ -502,7 +530,7 @@ namespace EnergyPlus {
 				}
 							
 				IntegratedHeatPumpUnits(DXCoilNum).DWHCoilType = "COIL:WATERHEATING:AIRTOWATERHEATPUMP:VARIABLESPEED";
-				IntegratedHeatPumpUnits(DXCoilNum).DWHCoilName = AlphArray(9);
+				IntegratedHeatPumpUnits(DXCoilNum).DWHCoilName = AlphArray(10);
 				Coiltype = IntegratedHeatPumpUnits(DXCoilNum).DWHCoilType;
 				CoilName = IntegratedHeatPumpUnits(DXCoilNum).DWHCoilName;
 
@@ -521,7 +549,7 @@ namespace EnergyPlus {
 				}
 				
 				IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilType = "COIL:WATERHEATING:AIRTOWATERHEATPUMP:VARIABLESPEED";
-				IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilName = AlphArray(10);
+				IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilName = AlphArray(11);
 				Coiltype = IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilType;
 				CoilName = IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilName;
 
@@ -540,7 +568,7 @@ namespace EnergyPlus {
 				}
 
 				IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilType = "COIL:COOLING:DX:VARIABLESPEED";
-				IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilName = AlphArray(11);
+				IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilName = AlphArray(12);
 				Coiltype = IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilType;
 				CoilName = IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilName;
 
@@ -560,7 +588,7 @@ namespace EnergyPlus {
 
 
 				IntegratedHeatPumpUnits(DXCoilNum).SCDWHWHCoilType = "COIL:WATERHEATING:AIRTOWATERHEATPUMP:VARIABLESPEED";
-				IntegratedHeatPumpUnits(DXCoilNum).SCDWHWHCoilName = AlphArray(12);
+				IntegratedHeatPumpUnits(DXCoilNum).SCDWHWHCoilName = AlphArray(13);
 				Coiltype = IntegratedHeatPumpUnits(DXCoilNum).SCDWHWHCoilType;
 				CoilName = IntegratedHeatPumpUnits(DXCoilNum).SCDWHWHCoilName;
 
@@ -579,7 +607,7 @@ namespace EnergyPlus {
 				}
 								
 				IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilType = "COIL:HEATING:DX:VARIABLESPEED";
-				IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilName = AlphArray(13);
+				IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilName = AlphArray(14);
 				Coiltype = IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilType;
 				CoilName = IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilName;
 
@@ -598,7 +626,7 @@ namespace EnergyPlus {
 				}
 				
 				IntegratedHeatPumpUnits(DXCoilNum).SHDWHWHCoilType = "COIL:WATERHEATING:AIRTOWATERHEATPUMP:VARIABLESPEED";
-				IntegratedHeatPumpUnits(DXCoilNum).SHDWHWHCoilName = AlphArray(14);
+				IntegratedHeatPumpUnits(DXCoilNum).SHDWHWHCoilName = AlphArray(15);
 				Coiltype = IntegratedHeatPumpUnits(DXCoilNum).SHDWHWHCoilType;
 				CoilName = IntegratedHeatPumpUnits(DXCoilNum).SHDWHWHCoilName;
 
@@ -630,14 +658,18 @@ namespace EnergyPlus {
 				if (false == IntegratedHeatPumpUnits(DXCoilNum).NodeConnected)
 				{
 					//air node connections
-					InNode = IntegratedHeatPumpUnits(DXCoilNum).AirInletNodeNum;
-					OutNode = IntegratedHeatPumpUnits(DXCoilNum).AirOutletNodeNum;
+					InNode = IntegratedHeatPumpUnits(DXCoilNum).AirCoolInletNodeNum;
+					OutNode = IntegratedHeatPumpUnits(DXCoilNum).AirHeatInletNodeNum;
 					SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCCoilName, ErrorsFound, InNode, OutNode);
-					SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SHCoilName, ErrorsFound, InNode, OutNode);
 					SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilName, ErrorsFound, InNode, OutNode);
 					SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilName, ErrorsFound, InNode, OutNode);
 					SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCDWHWHCoilName, ErrorsFound, InNode, OutNode);
+
+					InNode = IntegratedHeatPumpUnits(DXCoilNum).AirHeatInletNodeNum;
+					OutNode = IntegratedHeatPumpUnits(DXCoilNum).AirOutletNodeNum;
+					SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SHCoilName, ErrorsFound, InNode, OutNode);
 					SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilName, ErrorsFound, InNode, OutNode);
+
 					//SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SHDWHWHCoilName, ErrorsFound, InNode, OutNode);//SHDWHWHCoil has outdoor air nodes
 
 					//water node connections
@@ -689,6 +721,8 @@ namespace EnergyPlus {
 				//    WaterIndex=FindGlycol('WATER') !Initialize the WaterIndex once
 				GetCoilsInputFlag = false;
 			};
+
+			if (true == IntegratedHeatPumpUnits(DXCoilNum).IHPCoilsSized){ return; }
 
 			SetVarSpeedCoilData(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex, ErrorsFound, _, IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
 			if (ErrorsFound) {
@@ -839,6 +873,8 @@ namespace EnergyPlus {
 			}
 			else
 			{
+				Node(IntegratedHeatPumpUnits(DXCoilNum).WaterOutletNodeNum).Temp =
+					Node(IntegratedHeatPumpUnits(DXCoilNum).WaterInletNodeNum).Temp; 
 				SimWaterThermalTank(
 					IntegratedHeatPumpUnits(DXCoilNum).WHtankType, IntegratedHeatPumpUnits(DXCoilNum).WHtankName,
 					IntegratedHeatPumpUnits(DXCoilNum).WHtankID,
@@ -1053,7 +1089,7 @@ namespace EnergyPlus {
 
 			WhichCoil = FindItemInList(CoilName, IntegratedHeatPumpUnits);
 			if (WhichCoil != 0) {
-				NodeNumber = IntegratedHeatPumpUnits(WhichCoil).AirInletNodeNum;
+				NodeNumber = IntegratedHeatPumpUnits(WhichCoil).AirCoolInletNodeNum;
 			}
 
 			if (WhichCoil == 0) {
