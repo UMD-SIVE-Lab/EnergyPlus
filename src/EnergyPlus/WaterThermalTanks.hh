@@ -1,3 +1,61 @@
+// EnergyPlus, Copyright (c) 1996-2016, The Board of Trustees of the University of Illinois and
+// The Regents of the University of California, through Lawrence Berkeley National Laboratory
+// (subject to receipt of any required approvals from the U.S. Dept. of Energy). All rights
+// reserved.
+//
+// If you have questions about your rights to use or distribute this software, please contact
+// Berkeley Lab's Innovation & Partnerships Office at IPO@lbl.gov.
+//
+// NOTICE: This Software was developed under funding from the U.S. Department of Energy and the
+// U.S. Government consequently retains certain rights. As such, the U.S. Government has been
+// granted for itself and others acting on its behalf a paid-up, nonexclusive, irrevocable,
+// worldwide license in the Software to reproduce, distribute copies to the public, prepare
+// derivative works, and perform publicly and display publicly, and to permit others to do so.
+//
+// Redistribution and use in source and binary forms, with or without modification, are permitted
+// provided that the following conditions are met:
+//
+// (1) Redistributions of source code must retain the above copyright notice, this list of
+//     conditions and the following disclaimer.
+//
+// (2) Redistributions in binary form must reproduce the above copyright notice, this list of
+//     conditions and the following disclaimer in the documentation and/or other materials
+//     provided with the distribution.
+//
+// (3) Neither the name of the University of California, Lawrence Berkeley National Laboratory,
+//     the University of Illinois, U.S. Dept. of Energy nor the names of its contributors may be
+//     used to endorse or promote products derived from this software without specific prior
+//     written permission.
+//
+// (4) Use of EnergyPlus(TM) Name. If Licensee (i) distributes the software in stand-alone form
+//     without changes from the version obtained under this License, or (ii) Licensee makes a
+//     reference solely to the software portion of its product, Licensee must refer to the
+//     software as "EnergyPlus version X" software, where "X" is the version number Licensee
+//     obtained under this License and may not use a different name for the software. Except as
+//     specifically required in this Section (4), Licensee shall not use in a company name, a
+//     product name, in advertising, publicity, or other promotional activities any name, trade
+//     name, trademark, logo, or other designation of "EnergyPlus", "E+", "e+" or confusingly
+//     similar designation, without Lawrence Berkeley National Laboratory's prior written consent.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+// AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+//
+// You are under no obligation whatsoever to provide any bug fixes, patches, or upgrades to the
+// features, functionality or performance of the source code ("Enhancements") to anyone; however,
+// if you choose to make your Enhancements available either publicly, or directly to Lawrence
+// Berkeley National Laboratory, without imposing a separate written license agreement for such
+// Enhancements, then you hereby grant the following license: a non-exclusive, royalty-free
+// perpetual license to install, use, modify, prepare derivative works, incorporate into other
+// computer software, distribute, and sublicense such enhancements or derivative works thereof,
+// in binary and source code form.
+
 #ifndef WaterThermalTanks_hh_INCLUDED
 #define WaterThermalTanks_hh_INCLUDED
 
@@ -174,59 +232,6 @@ namespace WaterThermalTanks {
 			HPWHWrappedCondenserHeatingFrac(0.0)
 		{}
 
-		// Member Constructor
-		StratifiedNodeData(
-			Real64 const Mass, // All nodes have the same mass (kg)
-			Real64 const OnCycLossCoeff,
-			Real64 const OffCycLossCoeff,
-			Real64 const Temp,
-			Real64 const SavedTemp,
-			Real64 const NewTemp,
-			Real64 const TempSum,
-			Real64 const TempAvg, // Average node temperature over the time step (C)
-			Real64 const CondCoeffUp,
-			Real64 const CondCoeffDn,
-			Real64 const OffCycParaLoad, // Heat delivered to the tank from off-cycle parasitic sources
-			Real64 const OnCycParaLoad,
-			Real64 const UseMassFlowRate,
-			Real64 const SourceMassFlowRate,
-			Real64 const MassFlowFromUpper, // Mass flow rate into this node from node above
-			Real64 const MassFlowFromLower, // Mass flow rate into this node from node below
-			Real64 const MassFlowToUpper, // Mass flow rate from this node to node above
-			Real64 const MassFlowToLower, // Mass flow rate from this node to node below
-			Real64 const Volume,
-			Real64 const Height, // Node height from top to bottom (like a thickness)
-			Real64 const MaxCapacity, // For reporting
-			int const Inlets,
-			int const Outlets,
-			Real64 const HPWHWrappedCondenserHeatingFrac
-		) :
-			Mass( Mass ),
-			OnCycLossCoeff( OnCycLossCoeff ),
-			OffCycLossCoeff( OffCycLossCoeff ),
-			Temp( Temp ),
-			SavedTemp( SavedTemp ),
-			NewTemp( NewTemp ),
-			TempSum( TempSum ),
-			TempAvg( TempAvg ),
-			CondCoeffUp( CondCoeffUp ),
-			CondCoeffDn( CondCoeffDn ),
-			OffCycParaLoad( OffCycParaLoad ),
-			OnCycParaLoad( OnCycParaLoad ),
-			UseMassFlowRate( UseMassFlowRate ),
-			SourceMassFlowRate( SourceMassFlowRate ),
-			MassFlowFromUpper( MassFlowFromUpper ),
-			MassFlowFromLower( MassFlowFromLower ),
-			MassFlowToUpper( MassFlowToUpper ),
-			MassFlowToLower( MassFlowToLower ),
-			Volume( Volume ),
-			Height( Height ),
-			MaxCapacity( MaxCapacity ),
-			Inlets( Inlets ),
-			Outlets( Outlets ),
-			HPWHWrappedCondenserHeatingFrac( HPWHWrappedCondenserHeatingFrac )
-		{}
-
 	};
 
 	struct WaterHeaterSizingData
@@ -275,49 +280,6 @@ namespace WaterThermalTanks {
 			PeakNumberOfPeople( 0.0 ),
 			TotalFloorArea( 0.0 ),
 			TotalSolarCollectorArea( 0.0 )
-		{}
-
-		// Member Constructor
-		WaterHeaterSizingData(
-			int const DesignMode, // what sizing method to use
-			Real64 const TankDrawTime, // in hours, time storage can meet peak demand
-			Real64 const RecoveryTime, // time for tank to recover
-			Real64 const NominalVolForSizingDemandSideFlow, // nominal tank size to use in sizing demand side connections
-			int const NumberOfBedrooms,
-			Real64 const NumberOfBathrooms,
-			Real64 const TankCapacityPerPerson,
-			Real64 const RecoveryCapacityPerPerson,
-			Real64 const TankCapacityPerArea,
-			Real64 const RecoveryCapacityPerArea,
-			Real64 const NumberOfUnits,
-			Real64 const TankCapacityPerUnit,
-			Real64 const RecoveryCapacityPerUnit,
-			Real64 const TankCapacityPerCollectorArea,
-			Real64 const HeightAspectRatio,
-			Real64 const PeakDemand,
-			Real64 const PeakNumberOfPeople,
-			Real64 const TotalFloorArea,
-			Real64 const TotalSolarCollectorArea
-		) :
-			DesignMode( DesignMode ),
-			TankDrawTime( TankDrawTime ),
-			RecoveryTime( RecoveryTime ),
-			NominalVolForSizingDemandSideFlow( NominalVolForSizingDemandSideFlow ),
-			NumberOfBedrooms( NumberOfBedrooms ),
-			NumberOfBathrooms( NumberOfBathrooms ),
-			TankCapacityPerPerson( TankCapacityPerPerson ),
-			RecoveryCapacityPerPerson( RecoveryCapacityPerPerson ),
-			TankCapacityPerArea( TankCapacityPerArea ),
-			RecoveryCapacityPerArea( RecoveryCapacityPerArea ),
-			NumberOfUnits( NumberOfUnits ),
-			TankCapacityPerUnit( TankCapacityPerUnit ),
-			RecoveryCapacityPerUnit( RecoveryCapacityPerUnit ),
-			TankCapacityPerCollectorArea( TankCapacityPerCollectorArea ),
-			HeightAspectRatio( HeightAspectRatio ),
-			PeakDemand( PeakDemand ),
-			PeakNumberOfPeople( PeakNumberOfPeople ),
-			TotalFloorArea( TotalFloorArea ),
-			TotalSolarCollectorArea( TotalSolarCollectorArea )
 		{}
 
 	};
@@ -917,6 +879,7 @@ namespace WaterThermalTanks {
 			bIsIHP(false)
 		{}
 
+<<<<<<< HEAD
 		// Member Constructor
 		HeatPumpWaterHeaterData(
 			std::string const & Name, // Name of heat pump water heater
@@ -1144,6 +1107,8 @@ namespace WaterThermalTanks {
 			bIsIHP(bIsIHP)
 		{}
 
+=======
+>>>>>>> develop
 	};
 
 	struct WaterHeaterDesuperheaterData
@@ -1259,119 +1224,6 @@ namespace WaterThermalTanks {
 			IterLimitExceededNum2( 0 ),
 			RegulaFalsiFailedIndex2( 0 ),
 			RegulaFalsiFailedNum2( 0 )
-		{}
-
-		// Member Constructor
-		WaterHeaterDesuperheaterData(
-			std::string const & Name, // Name of heat pump water heater desuperheater
-			std::string const & Type, // Type of water heater desuperheating coil
-			int const InsuffTemperatureWarn, // Used for recurring error count on low source temperature
-			int const AvailSchedPtr, // Index to Availability Schedule curve index
-			int const SetPointTempSchedule, // Index to Setpoint Temperature Schedule curve
-			Real64 const DeadBandTempDiff, // Dead band temperature difference (cut-in temperature)
-			Real64 const HeatReclaimRecoveryEff, // recovery efficiency of desuperheater (0.3 max)
-			int const WaterInletNode, // Desuperheater water inlet node
-			int const WaterOutletNode, // Desuperheater water outlet node
-			Real64 const RatedInletWaterTemp, // Inlet water temp at rated heat reclaim recovery eff (C)
-			Real64 const RatedOutdoorAirTemp, // Outdoor air temp at rated heat reclaim recovery eff (C)
-			Real64 const MaxInletWaterTemp, // Max water temp for heat reclaim recovery (C)
-			std::string const & TankType, // Type of water heater (MIXED or STRATIFIED)
-			int const TankTypeNum, // Parameter for tank type (MIXED or STRATIFIED)
-			std::string const & TankName, // Name of tank associated with desuperheater
-			bool const StandAlone, // Flag for operation with no plant connections (no use nodes)
-			std::string const & HeatingSourceType, // Type of heating source (DX coil or refrigerated rack)
-			std::string const & HeatingSourceName, // Name of heating source
-			Real64 const HeaterRate, // Report variable for desuperheater heating rate [W]
-			Real64 const HeaterEnergy, // Report variable for desuperheater heating energy [J]
-			Real64 const PumpPower, // Report variable for water circulation pump power [W]
-			Real64 const PumpEnergy, // Report variable for water circulation pump energy [J]
-			Real64 const PumpElecPower, // Nominal power input to the water circulation pump [W]
-			Real64 const PumpFracToWater, // Nominal power fraction to water for the water circulation pump
-			Real64 const OperatingWaterFlowRate, // Operating volumetric water flow rate (m3/s)
-			int const HEffFTemp, // Heating capacity as a function of temperature curve index
-			Real64 const HEffFTempOutput, // report variable for HEffFTemp curve
-			Real64 const SetPointTemp, // set point or cut-out temperature [C]
-			int const WaterHeaterTankNum, // Index of Water Heater Tank
-			Real64 const DesuperheaterPLR, // part load ratio of desuperheater
-			Real64 const OnCycParaLoad, // Rate for on-cycle parasitic load (W)
-			Real64 const OffCycParaLoad, // Rate for off-cycle parasitic load (W)
-			Real64 const OnCycParaFuelEnergy, // Electric energy consumption for on-cycle parasitic load (J)
-			Real64 const OnCycParaFuelRate, // Electric consumption rate for on-cycle parasitic load (W)
-			Real64 const OffCycParaFuelEnergy, // Electric energy consumption for off-cycle parasitic load (J)
-			Real64 const OffCycParaFuelRate, // Electric consumption rate for off-cycle parasitic load (W)
-			int const Mode, // mode (0 = float, 1 = heating [-1=venting na for desuperheater])
-			int const SaveMode, // desuperheater mode on first iteration
-			int const SaveWHMode, // mode of water heater tank element (backup element)
-			Real64 const BackupElementCapacity, // Tank backup element capacity (W)
-			Real64 const DXSysPLR, // runtime fraction of desuperheater heating coil
-			std::string const & ReclaimHeatingSourceName, // The source name for the Desuperheater Heating Coil
-			int const ReclaimHeatingSourceIndexNum, // Index to reclaim heating source (condenser) of a specific type
-			int const ReclaimHeatingSource, // The source for the Desuperheater Heating Coil
-			int const SetPointError, // Used when temp SP in tank and desuperheater are reversed
-			int const SetPointErrIndex1, // Index to recurring error for tank/desuperheater set point temp
-			int const IterLimitErrIndex1, // Index for recurring iteration limit warning messages
-			int const IterLimitExceededNum1, // Counter for recurring iteration limit warning messages
-			int const RegulaFalsiFailedIndex1, // Index for recurring RegulaFalsi failed warning messages
-			int const RegulaFalsiFailedNum1, // Counter for recurring RegulaFalsi failed warning messages
-			int const IterLimitErrIndex2, // Index for recurring iteration limit warning messages
-			int const IterLimitExceededNum2, // Counter for recurring iteration limit warning messages
-			int const RegulaFalsiFailedIndex2, // Index for recurring RegulaFalsi failed warning messages
-			int const RegulaFalsiFailedNum2 // Counter for recurring RegulaFalsi failed warning messages
-		) :
-			Name( Name ),
-			Type( Type ),
-			InsuffTemperatureWarn( InsuffTemperatureWarn ),
-			AvailSchedPtr( AvailSchedPtr ),
-			SetPointTempSchedule( SetPointTempSchedule ),
-			DeadBandTempDiff( DeadBandTempDiff ),
-			HeatReclaimRecoveryEff( HeatReclaimRecoveryEff ),
-			WaterInletNode( WaterInletNode ),
-			WaterOutletNode( WaterOutletNode ),
-			RatedInletWaterTemp( RatedInletWaterTemp ),
-			RatedOutdoorAirTemp( RatedOutdoorAirTemp ),
-			MaxInletWaterTemp( MaxInletWaterTemp ),
-			TankType( TankType ),
-			TankTypeNum( TankTypeNum ),
-			TankName( TankName ),
-			StandAlone( StandAlone ),
-			HeatingSourceType( HeatingSourceType ),
-			HeatingSourceName( HeatingSourceName ),
-			HeaterRate( HeaterRate ),
-			HeaterEnergy( HeaterEnergy ),
-			PumpPower( PumpPower ),
-			PumpEnergy( PumpEnergy ),
-			PumpElecPower( PumpElecPower ),
-			PumpFracToWater( PumpFracToWater ),
-			OperatingWaterFlowRate( OperatingWaterFlowRate ),
-			HEffFTemp( HEffFTemp ),
-			HEffFTempOutput( HEffFTempOutput ),
-			SetPointTemp( SetPointTemp ),
-			WaterHeaterTankNum( WaterHeaterTankNum ),
-			DesuperheaterPLR( DesuperheaterPLR ),
-			OnCycParaLoad( OnCycParaLoad ),
-			OffCycParaLoad( OffCycParaLoad ),
-			OnCycParaFuelEnergy( OnCycParaFuelEnergy ),
-			OnCycParaFuelRate( OnCycParaFuelRate ),
-			OffCycParaFuelEnergy( OffCycParaFuelEnergy ),
-			OffCycParaFuelRate( OffCycParaFuelRate ),
-			Mode( Mode ),
-			SaveMode( SaveMode ),
-			SaveWHMode( SaveWHMode ),
-			BackupElementCapacity( BackupElementCapacity ),
-			DXSysPLR( DXSysPLR ),
-			ReclaimHeatingSourceName( ReclaimHeatingSourceName ),
-			ReclaimHeatingSourceIndexNum( ReclaimHeatingSourceIndexNum ),
-			ReclaimHeatingSource( ReclaimHeatingSource ),
-			SetPointError( SetPointError ),
-			SetPointErrIndex1( SetPointErrIndex1 ),
-			IterLimitErrIndex1( IterLimitErrIndex1 ),
-			IterLimitExceededNum1( IterLimitExceededNum1 ),
-			RegulaFalsiFailedIndex1( RegulaFalsiFailedIndex1 ),
-			RegulaFalsiFailedNum1( RegulaFalsiFailedNum1 ),
-			IterLimitErrIndex2( IterLimitErrIndex2 ),
-			IterLimitExceededNum2( IterLimitExceededNum2 ),
-			RegulaFalsiFailedIndex2( RegulaFalsiFailedIndex2 ),
-			RegulaFalsiFailedNum2( RegulaFalsiFailedNum2 )
 		{}
 
 	};
@@ -1618,29 +1470,6 @@ namespace WaterThermalTanks {
 	);
 
 	void clear_state();
-
-	//     NOTICE
-
-	//     Copyright (c) 1996-2015 The Board of Trustees of the University of Illinois
-	//     and The Regents of the University of California through Ernest Orlando Lawrence
-	//     Berkeley National Laboratory.  All rights reserved.
-
-	//     Portions of the EnergyPlus software package have been developed and copyrighted
-	//     by other individuals, companies and institutions.  These portions have been
-	//     incorporated into the EnergyPlus software package under license.   For a complete
-	//     list of contributors, see "Notice" located in main.cc.
-
-	//     NOTICE: The U.S. Government is granted for itself and others acting on its
-	//     behalf a paid-up, nonexclusive, irrevocable, worldwide license in this data to
-	//     reproduce, prepare derivative works, and perform publicly and display publicly.
-	//     Beginning five (5) years after permission to assert copyright is granted,
-	//     subject to two possible five year renewals, the U.S. Government is granted for
-	//     itself and others acting on its behalf a paid-up, non-exclusive, irrevocable
-	//     worldwide license in this data to reproduce, prepare derivative works,
-	//     distribute copies to the public, perform publicly and display publicly, and to
-	//     permit others to do so.
-
-	//     TRADEMARKS: EnergyPlus is a trademark of the US Department of Energy.
 
 } // WaterThermalTanks
 
