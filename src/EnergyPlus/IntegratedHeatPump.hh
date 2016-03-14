@@ -60,29 +60,23 @@
 #define IntegratedHeatPumps_hh_INCLUDED
 
 // ObjexxFCL Headers
-#include <ObjexxFCL/Array1D.hh>
-#include <ObjexxFCL/Optional.hh>
+#include <ObjexxFCL/Array1D.fwd.hh>
+#include <ObjexxFCL/Optional.fwd.hh>
 
 // EnergyPlus Headers
 #include <EnergyPlus.hh>
-#include <VariableSpeedCoils.hh>
-#include <DataSizing.hh>
-#include <DataGlobals.hh>
-#include <DataHVACGlobals.hh>
 
 namespace EnergyPlus {
 
-namespace IntegratedHeatPumps {
+namespace IntegratedHeatPump {
 
 	// Using/Aliasing
 	// Using/Aliasing
-	using VariableSpeedCoils::MaxSpedLevels;
 
 	// Data
 	//MODULE PARAMETER DEFINITIONS
 
 	// Identifier is VarSpeedCoil
-	extern int NumIHPs; //counter for all integrated heat pumps including air-source and water-source
 	extern bool GetCoilsInputFlag; // Flag set to make sure you get input once
 
 	// operation mode
@@ -237,7 +231,7 @@ namespace IntegratedHeatPumps {
 	};
 
 	// Object Data
-	extern Array1D< IntegratedHeatPumpData > IntegratedHeatPumpUnits;
+	extern Array1D< IntegratedHeatPumpData > IntegratedHeatPumps;
 
 	// Functions
 	void
