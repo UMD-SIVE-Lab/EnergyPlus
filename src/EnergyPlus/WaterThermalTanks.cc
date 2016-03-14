@@ -533,11 +533,11 @@ namespace WaterThermalTanks {
 				InitWaterThermalTank( HPWaterHeater( CompNum ).WaterHeaterTankNum, FirstHVACIteration );
 			}
 
-			if (true == HPWaterHeater(CompNum).bIsIHP)//pass the tank indexes to the IHP object
+			if ( true == HPWaterHeater(CompNum).bIsIHP )//pass the tank indexes to the IHP object
 			{
-				IntegratedHeatPumpUnits(HPWaterHeater(CompNum).DXCoilNum).WHtankType = CompType; 
-				IntegratedHeatPumpUnits(HPWaterHeater(CompNum).DXCoilNum).WHtankName = CompName;
-				IntegratedHeatPumpUnits(HPWaterHeater(CompNum).DXCoilNum).WHtankID = CompIndex;
+				IntegratedHeatPumpUnits( HPWaterHeater( CompNum ).DXCoilNum ).WHtankType = CompType; 
+				IntegratedHeatPumpUnits( HPWaterHeater( CompNum ).DXCoilNum ).WHtankName = CompName;
+				IntegratedHeatPumpUnits( HPWaterHeater( CompNum ).DXCoilNum ).WHtankID = CompIndex;
 			};
 
 			CalcHeatPumpWaterHeater( HPWaterHeater( CompNum ).WaterHeaterTankNum, FirstHVACIteration );
@@ -903,9 +903,7 @@ namespace WaterThermalTanks {
 		using IntegratedHeatPumps::GetDWHCoilCapacityIHP; 
 		using IntegratedHeatPumps::GetIHPDWHCoilPLFFPLR; 
 		using IntegratedHeatPumps::GetCoilInletNodeIHP; 
-		using IntegratedHeatPumps::SCWHMatchSCMode; 
-		using IntegratedHeatPumps::SCWHMatchWHMode;
-		using IntegratedHeatPumps::DWHMode;
+		using IntegratedHeatPumps::IHPOperationMode; 
 		using IntegratedHeatPumps::IntegratedHeatPumpUnits;
 
 
@@ -963,7 +961,7 @@ namespace WaterThermalTanks {
 		static Real64 HEffFTemp( 0.0 ); // Used for error checking desuperheater heating coils
 		bool Okay;
 		bool bIsVScoil( false ); // indicate if the heat pump WH coil is a variable-speed coil
-		int IHPIndex(0);// coil No for integrated heat pump
+		int IHPIndex( 0 ); // coil No for integrated heat pump
 
 		// Following allow for temporary storage of character strings but not saved in main structure
 		Real64 rho; // local fluid density
@@ -1636,7 +1634,7 @@ namespace WaterThermalTanks {
 
 					// Dummy condenser Inlet/Outlet Nodes for wrapped tanks
 					if ( HPWH.DXCoilTypeNum == DataHVACGlobals::CoilDX_HeatPumpWaterHeaterWrapped ) {
-						DXCoils::DXCoilData &Coil =DXCoil( HPWH.DXCoilNum );
+						DXCoils::DXCoilData &Coil = DXCoil( HPWH.DXCoilNum );
 
 						HPWHSaveNode.InletNodeName1 = "DUMMY CONDENSER INLET " + Coil.Name;
 						HPWH.CondWaterInletNode = GetOnlySingleNode( HPWHSaveNode.InletNodeName1, ErrorsFound, cCurrentModuleObject, HPWH.Name, NodeType_Water, NodeConnectionType_Inlet, 2, ObjectIsParent );
@@ -1762,9 +1760,9 @@ namespace WaterThermalTanks {
 
 						if (true == HPWH.bIsIHP)
 						{
-							HPWH.Capacity = GetDWHCoilCapacityIHP(HPWH.DXCoilType, HPWH.DXCoilName, SCWHMatchWHMode, DXCoilErrFlag);
+							HPWH.Capacity = GetDWHCoilCapacityIHP(HPWH.DXCoilType, HPWH.DXCoilName, IHPOperationMode::SCWHMatchWHMode, DXCoilErrFlag);
 							HPWH.DXCoilAirInletNode = GetCoilInletNodeIHP(HPWH.DXCoilType, HPWH.DXCoilName, DXCoilErrFlag);
-							HPWH.DXCoilPLFFPLR = GetIHPDWHCoilPLFFPLR(HPWH.DXCoilType, HPWH.DXCoilName, SCWHMatchWHMode, DXCoilErrFlag);
+							HPWH.DXCoilPLFFPLR = GetIHPDWHCoilPLFFPLR(HPWH.DXCoilType, HPWH.DXCoilName, IHPOperationMode::SCWHMatchWHMode, DXCoilErrFlag);
 						}
 						else
 						{
@@ -5309,13 +5307,13 @@ namespace WaterThermalTanks {
 			HPWHInletWBTemp = PsyTwbFnTdbWPb( HPWHInletDBTemp, HPInletHumRat, OutBaroPress );
 
 			// initialize flow rates at speed levels for varaible-speed HPWH
-			if ((true == HPWaterHeater(HPNum).bIsIHP) && (0 == HPWaterHeater(HPNum).NumofSpeed) )//use SCWH coil represents
+			if ( ( true == HPWaterHeater( HPNum ).bIsIHP ) && ( 0 == HPWaterHeater( HPNum ).NumofSpeed ) ) //use SCWH coil represents
 			{
-				SizeIHP(HPWaterHeater(HPNum).DXCoilNum);//
+				SizeIHP( HPWaterHeater( HPNum ).DXCoilNum );
 				//SimIHP(BlankString, HPWaterHeater(HPNum).DXCoilNum,
 				//	0, EMP1, EMP2, EMP3, 0, 0.0, 1, 0.0, 0.0, 0.0, false, 0.0); //conduct the sizing operation in the IHP
-				VSCoilID = IntegratedHeatPumpUnits(HPWaterHeater(HPNum).DXCoilNum).SCDWHCoolCoilIndex; 
-				HPWaterHeater(HPNum).NumofSpeed = VarSpeedCoil(VSCoilID).NumOfSpeeds;
+				VSCoilID = IntegratedHeatPumpUnits( HPWaterHeater( HPNum ).DXCoilNum ).SCDWHCoolCoilIndex; 
+				HPWaterHeater( HPNum ).NumofSpeed = VarSpeedCoil( VSCoilID ).NumOfSpeeds;
 
 			}
 			else if (SameString(HPWaterHeater(HPNum).DXCoilType, "Coil:WaterHeating:AirToWaterHeatPump:VariableSpeed") &&
@@ -5333,12 +5331,11 @@ namespace WaterThermalTanks {
 
 			if (HPWaterHeater(HPNum).NumofSpeed > 0) {
 
-				if (true == HPWaterHeater(HPNum).bIsIHP) VSCoilID = IntegratedHeatPumpUnits(HPWaterHeater(HPNum).DXCoilNum).SCDWHCoolCoilIndex;
-				else VSCoilID = HPWaterHeater(HPNum).DXCoilNum;
+				if ( true == HPWaterHeater( HPNum ).bIsIHP )VSCoilID = IntegratedHeatPumpUnits( HPWaterHeater( HPNum ).DXCoilNum ).SCDWHCoolCoilIndex;
+				else VSCoilID = HPWaterHeater( HPNum ).DXCoilNum;
 
 				// scale air flow rates
-				MulSpeedFlowScale = VarSpeedCoil(VSCoilID).RatedAirVolFlowRate /
-					VarSpeedCoil(VSCoilID).MSRatedAirVolFlowRate(VarSpeedCoil(VSCoilID).NormSpedLevel);
+				MulSpeedFlowScale = VarSpeedCoil(VSCoilID).RatedAirVolFlowRate / VarSpeedCoil(VSCoilID).MSRatedAirVolFlowRate(VarSpeedCoil(VSCoilID).NormSpedLevel);
 				for (Iter = 1; Iter <= HPWaterHeater(HPNum).NumofSpeed; ++Iter) {
 					HPWaterHeater(HPNum).HPWHAirVolFlowRate(Iter) = VarSpeedCoil(VSCoilID).MSRatedAirVolFlowRate(Iter) * MulSpeedFlowScale;
 				}
@@ -7362,9 +7359,7 @@ namespace WaterThermalTanks {
 		using IntegratedHeatPumps::GetLowSpeedNumIHP; 
 		using IntegratedHeatPumps::GetMaxSpeedNumIHP;
 		using IntegratedHeatPumps::GetCurWorkMode; 
-		using IntegratedHeatPumps::DWHMode; 
-		using IntegratedHeatPumps::SCWHMatchWHMode;
-		using IntegratedHeatPumps::SHDWHElecHeatOffMode;
+		using IntegratedHeatPumps::IHPOperationMode; 
 
 		// Locals
 		// SUBROUTINE ARGUMENT DEFINITIONS:
@@ -7412,9 +7407,9 @@ namespace WaterThermalTanks {
 		Real64 HPWHCondInletNodeLast; // Water temp sent from WH on last iteration
 		//Real64 HPWaterInletNodeTempSaved; // Water temp saved from previous timestep
 		int loopIter; // iteration loop counter
-		int VSCoilNum(0); 
-		int IHPMode(0);//IHP working mode
-		int LowSpeedNum(2);//low speed number for iteration
+		int VSCoilNum( 0 ); 
+		IHPOperationMode IHPMode( IHPOperationMode::IdleMode ); // IHP working mode
+		int LowSpeedNum( 2 ); // low speed number for iteration
 
 		// References to objects used in this function
 		WaterThermalTankData & Tank = WaterThermalTank( WaterThermalTankNum );
@@ -7638,7 +7633,7 @@ namespace WaterThermalTanks {
 				SpeedNum = 1;
 				SetVSHPWHFlowRates( WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration );
 
-				if (true == HeatPump.bIsIHP)
+				if ( true == HeatPump.bIsIHP )
 				{
 					bIterSpeed = false;//don't iterate speed unless match conditions below 
 					IHPMode = GetCurWorkMode(HeatPump.DXCoilNum);
@@ -7657,9 +7652,10 @@ namespace WaterThermalTanks {
 						SimIHP(HeatPump.DXCoilName, HeatPump.DXCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0,
 							true, false, 1.0);
 
-						if ((SCWHMatchWHMode == IHPMode) || (DWHMode == IHPMode))
-						{ bIterSpeed = true; }
-						else if (SHDWHElecHeatOffMode == IHPMode)//turn off heater element
+						if ( ( IHPOperationMode::SCWHMatchWHMode == IHPMode ) || ( IHPOperationMode::DWHMode == IHPMode ) ) {
+							bIterSpeed = true;
+						}
+						else if (IHPOperationMode::SHDWHElecHeatOffMode == IHPMode) // turn off heater element
 						{
 							Tank.MaxCapacity = 0.0;
 							Tank.MinCapacity = 0.0;
@@ -7668,8 +7664,7 @@ namespace WaterThermalTanks {
 				}
 				else
 				{
-					SimVariableSpeedCoils
-						(HeatPump.DXCoilName, HeatPump.DXCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+					SimVariableSpeedCoils( HeatPump.DXCoilName, HeatPump.DXCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0 );
 				}
 				
 				CalcWaterThermalTank( WaterThermalTankNum );
@@ -8409,7 +8404,7 @@ namespace WaterThermalTanks {
 			// Here we create a pointer to the TotalHeatingEnergyRate for the appropriate coil type.
 			Real64 *CoilTotalHeatingEnergyRatePtr;
 			if ( isVariableSpeed ) {
-				if (true == HPWH.bIsIHP)
+				if ( true == HPWH.bIsIHP )
 					CoilTotalHeatingEnergyRatePtr = &IntegratedHeatPumps::IntegratedHeatPumpUnits(HPWH.DXCoilNum).TotalHeatingEnergyRate;
 				else 
 					CoilTotalHeatingEnergyRatePtr = &VariableSpeedCoils::VarSpeedCoil( HPWH.DXCoilNum ).TotalHeatingEnergyRate;
@@ -10412,7 +10407,7 @@ namespace WaterThermalTanks {
 					{
 						bIsVSCoil = true;
 						VSCoilNum = HPWaterHeater(HPNum).DXCoilNum;
-						if (true == HPWaterHeater(HPNum).bIsIHP) VSCoilNum = IntegratedHeatPumpUnits(HPWaterHeater(HPNum).DXCoilNum).SCWHCoilIndex; 
+						if ( true == HPWaterHeater(HPNum).bIsIHP ) VSCoilNum = IntegratedHeatPumpUnits( HPWaterHeater( HPNum ).DXCoilNum ).SCWHCoilIndex; 
 
 						RhoWater = RhoH2O(WaterThermalTank(WaterThermalTankNum).TankTemp);
 						SetVSHPWHFlowRates(WaterThermalTankNum, HPNum,

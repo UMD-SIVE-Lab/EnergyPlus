@@ -1,3 +1,61 @@
+// EnergyPlus, Copyright (c) 1996-2016, The Board of Trustees of the University of Illinois and
+// The Regents of the University of California, through Lawrence Berkeley National Laboratory
+// (subject to receipt of any required approvals from the U.S. Dept. of Energy). All rights
+// reserved.
+//
+// If you have questions about your rights to use or distribute this software, please contact
+// Berkeley Lab's Innovation & Partnerships Office at IPO@lbl.gov.
+//
+// NOTICE: This Software was developed under funding from the U.S. Department of Energy and the
+// U.S. Government consequently retains certain rights. As such, the U.S. Government has been
+// granted for itself and others acting on its behalf a paid-up, nonexclusive, irrevocable,
+// worldwide license in the Software to reproduce, distribute copies to the public, prepare
+// derivative works, and perform publicly and display publicly, and to permit others to do so.
+//
+// Redistribution and use in source and binary forms, with or without modification, are permitted
+// provided that the following conditions are met:
+//
+// (1) Redistributions of source code must retain the above copyright notice, this list of
+//     conditions and the following disclaimer.
+//
+// (2) Redistributions in binary form must reproduce the above copyright notice, this list of
+//     conditions and the following disclaimer in the documentation and/or other materials
+//     provided with the distribution.
+//
+// (3) Neither the name of the University of California, Lawrence Berkeley National Laboratory,
+//     the University of Illinois, U.S. Dept. of Energy nor the names of its contributors may be
+//     used to endorse or promote products derived from this software without specific prior
+//     written permission.
+//
+// (4) Use of EnergyPlus(TM) Name. If Licensee (i) distributes the software in stand-alone form
+//     without changes from the version obtained under this License, or (ii) Licensee makes a
+//     reference solely to the software portion of its product, Licensee must refer to the
+//     software as "EnergyPlus version X" software, where "X" is the version number Licensee
+//     obtained under this License and may not use a different name for the software. Except as
+//     specifically required in this Section (4), Licensee shall not use in a company name, a
+//     product name, in advertising, publicity, or other promotional activities any name, trade
+//     name, trademark, logo, or other designation of "EnergyPlus", "E+", "e+" or confusingly
+//     similar designation, without Lawrence Berkeley National Laboratory's prior written consent.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+// AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+//
+// You are under no obligation whatsoever to provide any bug fixes, patches, or upgrades to the
+// features, functionality or performance of the source code ("Enhancements") to anyone; however,
+// if you choose to make your Enhancements available either publicly, or directly to Lawrence
+// Berkeley National Laboratory, without imposing a separate written license agreement for such
+// Enhancements, then you hereby grant the following license: a non-exclusive, royalty-free
+// perpetual license to install, use, modify, prepare derivative works, incorporate into other
+// computer software, distribute, and sublicense such enhancements or derivative works thereof,
+// in binary and source code form.
+
 // C++ Headers
 #include <cmath>
 
@@ -83,15 +141,14 @@ namespace EnergyPlus {
 
 		// Functions
 		void
-			clear_state()
+		clear_state()
 		{
-			
 			IntegratedHeatPumpUnits.deallocate();
 		}
 
 
 		void
-			SimIHP(
+		SimIHP(
 			std::string const & CompName, // Coil Name
 			int & CompIndex, // Index for Component name
 			int const CyclingScheme, // Continuous fan OR cycling compressor
@@ -105,9 +162,9 @@ namespace EnergyPlus {
 			Real64 const SensLoad, // Sensible demand load [W]
 			Real64 const LatentLoad, // Latent demand load [W]
 			bool const IsCallbyWH, //whether the call from the water heating loop or air loop, true = from water heating loop
-			bool const FirstHVACIteration, // TRUE if First iteration of simulation
+			bool const EP_UNUSED( FirstHVACIteration ), // TRUE if First iteration of simulation
 			Optional< Real64 const > OnOffAirFlowRat // ratio of comp on to comp off air flow rate
-			)
+		)
 		{
 
 			//       AUTHOR         Bo Shen, ORNL
@@ -148,12 +205,12 @@ namespace EnergyPlus {
 			
 			// SUBROUTINE LOCAL VARIABLE DECLARATIONS:
 			int DXCoilNum(0); // The WatertoAirHP that you are currently loading input into
-			int LocNum(0); 
-			bool ErrorFound(false); 
-			Real64 MyLoad(0.0);
-			Real64 MaxCap(0.0);
-			Real64 MinCap(0.0);
-			Real64 OptCap(0.0);
+			// int LocNum(0); 
+			// bool ErrorFound(false); 
+			// Real64 MyLoad(0.0);
+			// Real64 MaxCap(0.0);
+			// Real64 MinCap(0.0);
+			// Real64 OptCap(0.0);
 
 			// Obtains and Allocates WatertoAirHP related parameters from input file
 			if (GetCoilsInputFlag) { //First time subroutine has been entered
@@ -185,13 +242,13 @@ namespace EnergyPlus {
 
 			switch (IntegratedHeatPumpUnits(DXCoilNum).CurMode)
 			{
-			case IdleMode:
+			case IHPOperationMode::IdleMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).SimFlag = false; 
 				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex);
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).SimFlag = false;
 				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex);
 				break; 
-			case SCMode:
+			case IHPOperationMode::SCMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).SimFlag = true;
 				if (false == IsCallbyWH)
 				{
@@ -204,7 +261,7 @@ namespace EnergyPlus {
 					UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex);
 				}
 				break; 
-			case SHMode:
+			case IHPOperationMode::SHMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).SimFlag = true;
 				if (false == IsCallbyWH)
 				{
@@ -217,7 +274,7 @@ namespace EnergyPlus {
 					UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
 				}
 				break; 
-			case DWHMode:
+			case IHPOperationMode::DWHMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).SimFlag = true;
 				if (true == IsCallbyWH)
 				{
@@ -227,7 +284,7 @@ namespace EnergyPlus {
 					IntegratedHeatPumpUnits(DXCoilNum).TotalHeatingEnergyRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).TotalHeatingEnergyRate;
 				}
 				break; 
-			case SCWHMatchSCMode:
+			case IHPOperationMode::SCWHMatchSCMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex).SimFlag = true;
 				if (false == IsCallbyWH)
 				{
@@ -242,7 +299,7 @@ namespace EnergyPlus {
 				}
 
 				break; 
-			case SCWHMatchWHMode:
+			case IHPOperationMode::SCWHMatchWHMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex).SimFlag = true;
 				if (true == IsCallbyWH)
 				{
@@ -257,7 +314,7 @@ namespace EnergyPlus {
 				}
 
 				break; 
-			case SCDWHMode:
+			case IHPOperationMode::SCDWHMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilIndex).SimFlag = true;
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCDWHWHCoilIndex).SimFlag = true;
 				if (false == IsCallbyWH)
@@ -278,8 +335,8 @@ namespace EnergyPlus {
 				}
 
 				break; 
-			case SHDWHElecHeatOffMode:
-			case SHDWHElecHeatOnMode:
+			case IHPOperationMode::SHDWHElecHeatOffMode:
+			case IHPOperationMode::SHDWHElecHeatOnMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilIndex).SimFlag = true;
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHDWHWHCoilIndex).SimFlag = true;
 				if (false == IsCallbyWH)
@@ -312,7 +369,7 @@ namespace EnergyPlus {
 
 
 		void
-			GetIHPInput()
+		GetIHPInput()
 		{
 
 			// SUBROUTINE INFORMATION:
@@ -363,7 +420,7 @@ namespace EnergyPlus {
 
 			// SUBROUTINE LOCAL VARIABLE DECLARATIONS:
 			int DXCoilNum; //No of IHP DX system
-			int IHPNum; // The Water to Air HP that you are currently loading input into
+			// int IHPNum; // The Water to Air HP that you are currently loading input into
 			int NumASIHPs; // Counter for air-source integrated heat pumps
 
 			int NumAlphas; // Number of variables in String format
@@ -656,7 +713,7 @@ namespace EnergyPlus {
 				IntegratedHeatPumpUnits(DXCoilNum).IHPCoilsSized = false; 
 				IntegratedHeatPumpUnits(DXCoilNum).CoolVolFlowScale = 1.0; 
 				IntegratedHeatPumpUnits(DXCoilNum).HeatVolFlowScale = 1.0;
-				IntegratedHeatPumpUnits(DXCoilNum).CurMode = IdleMode; 
+				IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::IdleMode; 
 				IntegratedHeatPumpUnits(DXCoilNum).MaxHeatAirMassFlow = 1e10;
 				IntegratedHeatPumpUnits(DXCoilNum).MaxHeatAirVolFlow = 1e10;
 				IntegratedHeatPumpUnits(DXCoilNum).MaxCoolAirMassFlow = 1e10; 
@@ -672,7 +729,7 @@ namespace EnergyPlus {
 		}
 
 		void
-			SizeIHP(int const DXCoilNum)
+		SizeIHP(int const DXCoilNum)
 		{
 			using VariableSpeedCoils::SimVariableSpeedCoils;
 			using VariableSpeedCoils::SetVarSpeedCoilData;
@@ -787,7 +844,7 @@ namespace EnergyPlus {
 	
 
 		void
-			UpdateIHP(int const DXCoilNum)
+		UpdateIHP(int const EP_UNUSED( DXCoilNum ) )
 		{
 		
 
@@ -795,16 +852,17 @@ namespace EnergyPlus {
 
 
 		void
-			InitializeIHP(int const DXCoilNum)
+		InitializeIHP(int const EP_UNUSED( DXCoilNum ) )
 		{
 			
 		}
 
 		void
-			DecideWorkMode(int const DXCoilNum,
+		DecideWorkMode(
+			int const DXCoilNum,
 			Real64 const SensLoad, // Sensible demand load [W]
 			Real64 const LatentLoad // Latent demand load [W]
-			)//shall be called from a air loop parent
+		)//shall be called from a air loop parent
 		{
 			using DataHVACGlobals::SmallLoad;
 			using DataEnvironment::OutDryBulbTemp;
@@ -860,19 +918,19 @@ namespace EnergyPlus {
 			{
 				if ((SensLoad < (-1.0 * SmallLoad)) || (LatentLoad < (-1.0 * SmallLoad)))
 				{
-					IntegratedHeatPumpUnits(DXCoilNum).CurMode = SCMode;
+					IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::SCMode;
 				}
 				else if (SensLoad > SmallLoad)
 				{
 					if ((IntegratedHeatPumpUnits(DXCoilNum).ControlledZoneTemp > IntegratedHeatPumpUnits(DXCoilNum).TindoorOverCoolAllow) &&
 						(OutDryBulbTemp > IntegratedHeatPumpUnits(DXCoilNum).TambientOverCoolAllow))//used for cooling season
-						IntegratedHeatPumpUnits(DXCoilNum).CurMode = IdleMode;
+						IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::IdleMode;
 					else
-						IntegratedHeatPumpUnits(DXCoilNum).CurMode = SHMode;
+						IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::SHMode;
 				}
 				else
 				{
-					IntegratedHeatPumpUnits(DXCoilNum).CurMode = IdleMode;
+					IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::IdleMode;
 				}
 			}
 			//below has water heating calls
@@ -880,47 +938,47 @@ namespace EnergyPlus {
 			{
 				if (WHHeatVolSave < IntegratedHeatPumpUnits(DXCoilNum).WaterVolSCDWH)
 				{
-					IntegratedHeatPumpUnits(DXCoilNum).CurMode = SCDWHMode;
+					IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::SCDWHMode;
 					IntegratedHeatPumpUnits(DXCoilNum).WaterFlowAccumVol = WHHeatVolSave + 
 						Node(IntegratedHeatPumpUnits(DXCoilNum).WaterTankoutNod).MassFlowRate/1000.0 * TimeStepSys * SecInHour;//1000.0 converted to volumetric flow rate
 				}
 				else
 				{
-					if (1 == IntegratedHeatPumpUnits(DXCoilNum).ModeMatchSCWH) IntegratedHeatPumpUnits(DXCoilNum).CurMode = SCWHMatchWHMode;
-					else IntegratedHeatPumpUnits(DXCoilNum).CurMode = SCWHMatchSCMode;
+					if (1 == IntegratedHeatPumpUnits(DXCoilNum).ModeMatchSCWH) IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::SCWHMatchWHMode;
+					else IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::SCWHMatchSCMode;
 				};
 
 			}
 			else if ((IntegratedHeatPumpUnits(DXCoilNum).ControlledZoneTemp > IntegratedHeatPumpUnits(DXCoilNum).TindoorOverCoolAllow) &&
 				(OutDryBulbTemp > IntegratedHeatPumpUnits(DXCoilNum).TambientOverCoolAllow))
 			{
-				IntegratedHeatPumpUnits(DXCoilNum).CurMode = SCWHMatchWHMode;
+				IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::SCWHMatchWHMode;
 			}
 			else if ((IntegratedHeatPumpUnits(DXCoilNum).ControlledZoneTemp > IntegratedHeatPumpUnits(DXCoilNum).TindoorWHHighPriority) &&
 				(OutDryBulbTemp > IntegratedHeatPumpUnits(DXCoilNum).TambientWHHighPriority))
 			{
-				IntegratedHeatPumpUnits(DXCoilNum).CurMode = DWHMode;
+				IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::DWHMode;
 			}
 			else if (SensLoad > SmallLoad)
 			{
 				if (WHHeatTimeSav > IntegratedHeatPumpUnits(DXCoilNum).TimeLimitSHDWH)
 				{
-					IntegratedHeatPumpUnits(DXCoilNum).CurMode = SHDWHElecHeatOnMode;
+					IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::SHDWHElecHeatOnMode;
 					IntegratedHeatPumpUnits(DXCoilNum).SHDWHRunTime = WHHeatTimeSav + TimeStepSys * SecInHour; 
 				}
 				else
 				{
-					IntegratedHeatPumpUnits(DXCoilNum).CurMode = SHDWHElecHeatOffMode;
+					IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::SHDWHElecHeatOffMode;
 				};
 			}
 			else
 			{
-				IntegratedHeatPumpUnits(DXCoilNum).CurMode = DWHMode;
+				IntegratedHeatPumpUnits(DXCoilNum).CurMode = IHPOperationMode::DWHMode;
 			}
 		}
 
-		int
-			GetCurWorkMode(int const DXCoilNum)
+		IHPOperationMode
+		GetCurWorkMode(int const DXCoilNum)
 		{
 			// Obtains and Allocates WatertoAirHP related parameters from input file
 			if (GetCoilsInputFlag) { //First time subroutine has been entered
@@ -931,16 +989,16 @@ namespace EnergyPlus {
 
 			if (IntegratedHeatPumpUnits(DXCoilNum).IHPCoilsSized == false) SizeIHP(DXCoilNum);
 
-			return(IntegratedHeatPumpUnits(DXCoilNum).CurMode);
+			return IntegratedHeatPumpUnits(DXCoilNum).CurMode;
 		}
 
 
 		int
-			GetCoilIndexIHP(
+		GetCoilIndexIHP(
 			std::string const & CoilType, // must match coil types in this module
 			std::string const & CoilName, // must match coil names for the coil type
 			bool & ErrorsFound // set to true if problem
-			)
+		)
 		{
 
 			// FUNCTION INFORMATION:
@@ -1000,12 +1058,11 @@ namespace EnergyPlus {
 		}
 
 		int
-			GetCoilInletNodeIHP(
+		GetCoilInletNodeIHP(
 			std::string const & CoilType, // must match coil types in this module
 			std::string const & CoilName, // must match coil names for the coil type
 			bool & ErrorsFound // set to true if problem
-			)
-
+		)
 		{
 			// FUNCTION INFORMATION:
 			//       AUTHOR         Bo Shen
@@ -1067,12 +1124,12 @@ namespace EnergyPlus {
 		}
 
 		int
-			GetIHPDWHCoilPLFFPLR(
+		GetIHPDWHCoilPLFFPLR(
 			std::string const & CoilType, // must match coil types in this module
 			std::string const & CoilName, // must match coil names for the coil type
-			int const Mode,//mode coil type
+			IHPOperationMode const EP_UNUSED( Mode ),//mode coil type
 			bool & ErrorsFound // set to true if problem
-			)
+		)
 		{
 			// FUNCTION INFORMATION:
 			//       AUTHOR         Bo Shen
@@ -1142,12 +1199,12 @@ namespace EnergyPlus {
 
 
 		Real64
-			GetDWHCoilCapacityIHP(
+		GetDWHCoilCapacityIHP(
 			std::string const & CoilType, // must match coil types in this module
 			std::string const & CoilName, // must match coil names for the coil type
-			int const Mode,//mode coil type
+			IHPOperationMode const EP_UNUSED( Mode ), //mode coil type
 			bool & ErrorsFound // set to true if problem
-			)
+		)
 		{
 
 			// FUNCTION INFORMATION:
@@ -1223,7 +1280,7 @@ namespace EnergyPlus {
 		}
 
 		int
-			GetLowSpeedNumIHP(int const DXCoilNum)
+		GetLowSpeedNumIHP(int const DXCoilNum)
 		{
 			int SpeedNum(0); 
 
@@ -1237,27 +1294,27 @@ namespace EnergyPlus {
 
 			switch (IntegratedHeatPumpUnits(DXCoilNum).CurMode)
 			{
-			case IdleMode:
+			case IHPOperationMode::IdleMode:
 				SpeedNum = 1; 
 				break;
-			case SCMode:
+			case IHPOperationMode::SCMode:
 				SpeedNum = 1;
 				break;
-			case SHMode:
+			case IHPOperationMode::SHMode:
 				SpeedNum = 1;
 				break;
-			case DWHMode:
+			case IHPOperationMode::DWHMode:
 				SpeedNum = 1;
 				break;
-			case SCWHMatchSCMode:
-			case SCWHMatchWHMode:
+			case IHPOperationMode::SCWHMatchSCMode:
+			case IHPOperationMode::SCWHMatchWHMode:
 				SpeedNum = IntegratedHeatPumpUnits(DXCoilNum).MinSpedSCWH; 
 				break;
-			case SCDWHMode:
+			case IHPOperationMode::SCDWHMode:
 				SpeedNum = IntegratedHeatPumpUnits(DXCoilNum).MinSpedSCDWH;
 				break;
-			case SHDWHElecHeatOffMode:
-			case SHDWHElecHeatOnMode:
+			case IHPOperationMode::SHDWHElecHeatOffMode:
+			case IHPOperationMode::SHDWHElecHeatOnMode:
 				SpeedNum = IntegratedHeatPumpUnits(DXCoilNum).MinSpedSHDWH;
 				break;
 			default:
@@ -1269,7 +1326,7 @@ namespace EnergyPlus {
 		}
 
 		int
-			GetMaxSpeedNumIHP(int const DXCoilNum)
+		GetMaxSpeedNumIHP(int const DXCoilNum)
 		{
 			using VariableSpeedCoils::VarSpeedCoil;
 
@@ -1284,27 +1341,27 @@ namespace EnergyPlus {
 
 			switch (IntegratedHeatPumpUnits(DXCoilNum).CurMode)
 			{
-			case IdleMode:
+			case IHPOperationMode::IdleMode:
 				SpeedNum = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).NumOfSpeeds;
 				break;
-			case SCMode:
+			case IHPOperationMode::SCMode:
 				SpeedNum = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).NumOfSpeeds;
 				break;
-			case SHMode:
+			case IHPOperationMode::SHMode:
 				SpeedNum = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).NumOfSpeeds;
 				break;
-			case DWHMode:
+			case IHPOperationMode::DWHMode:
 				SpeedNum = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).NumOfSpeeds;
 				break;
-			case SCWHMatchSCMode:
-			case SCWHMatchWHMode:
+			case IHPOperationMode::SCWHMatchSCMode:
+			case IHPOperationMode::SCWHMatchWHMode:
 				SpeedNum = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex).NumOfSpeeds;
 				break;
-			case SCDWHMode:
+			case IHPOperationMode::SCDWHMode:
 				SpeedNum = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilIndex).NumOfSpeeds;
 				break;
-			case SHDWHElecHeatOffMode:
-			case SHDWHElecHeatOnMode:
+			case IHPOperationMode::SHDWHElecHeatOffMode:
+			case IHPOperationMode::SHDWHElecHeatOnMode:
 				SpeedNum = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilIndex).NumOfSpeeds;
 				break;
 			default:
@@ -1316,9 +1373,12 @@ namespace EnergyPlus {
 		}
 
 		Real64
-			GetAirVolFlowRateIHP(int const DXCoilNum, int const SpeedNum, Real64 const SpeedRatio,
+		GetAirVolFlowRateIHP(
+			int const DXCoilNum,
+			int const SpeedNum,
+			Real64 const SpeedRatio,
 			bool const IsCallbyWH //whether the call from the water heating loop or air loop, true = from water heating loop
-			)
+		)
 		{
 			using VariableSpeedCoils::VarSpeedCoil;
 
@@ -1339,10 +1399,10 @@ namespace EnergyPlus {
 			FlowScale = 0.0;
 			switch (IntegratedHeatPumpUnits(DXCoilNum).CurMode)
 			{
-			case IdleMode:
+			case IHPOperationMode::IdleMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex;
 				break;
-			case SCMode:
+			case IHPOperationMode::SCMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex;
 				if (false == IsCallbyWH)
 				{
@@ -1350,18 +1410,18 @@ namespace EnergyPlus {
 				}
 
 				break;
-			case SHMode:
+			case IHPOperationMode::SHMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex;
 				if (false == IsCallbyWH)
 				{
 					FlowScale = IntegratedHeatPumpUnits(DXCoilNum).HeatVolFlowScale;
 				}				
 				break;
-			case DWHMode:
+			case IHPOperationMode::DWHMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex;
 				FlowScale = 1.0;
 				break;
-			case SCWHMatchSCMode:
+			case IHPOperationMode::SCWHMatchSCMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex;
 				FlowScale = IntegratedHeatPumpUnits(DXCoilNum).CoolVolFlowScale;
 				if (true == IsCallbyWH)
@@ -1370,7 +1430,7 @@ namespace EnergyPlus {
 					AirVolFlowRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex).AirVolFlowRate; 
 				}
 				break;
-			case SCWHMatchWHMode:
+			case IHPOperationMode::SCWHMatchWHMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex;
 				FlowScale = IntegratedHeatPumpUnits(DXCoilNum).CoolVolFlowScale;
 				if (false == IsCallbyWH)
@@ -1379,7 +1439,7 @@ namespace EnergyPlus {
 					AirVolFlowRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex).AirVolFlowRate;
 				}
 				break;
-			case SCDWHMode:
+			case IHPOperationMode::SCDWHMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilIndex;
 				FlowScale = IntegratedHeatPumpUnits(DXCoilNum).CoolVolFlowScale;
 				if (true == IsCallbyWH)
@@ -1388,8 +1448,8 @@ namespace EnergyPlus {
 					AirVolFlowRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilIndex).AirVolFlowRate;
 				}
 				break;
-			case SHDWHElecHeatOffMode:
-			case SHDWHElecHeatOnMode:
+			case IHPOperationMode::SHDWHElecHeatOffMode:
+			case IHPOperationMode::SHDWHElecHeatOnMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilIndex;
 				FlowScale = IntegratedHeatPumpUnits(DXCoilNum).HeatVolFlowScale;
 				if (true == IsCallbyWH)
@@ -1421,9 +1481,12 @@ namespace EnergyPlus {
 		}
 
 		Real64
-			GetWaterVolFlowRateIHP(int const DXCoilNum, int const SpeedNum, Real64 const SpeedRatio,
-			bool const IsCallbyWH //whether the call from the water heating loop or air loop, true = from water heating loop
-			)
+		GetWaterVolFlowRateIHP(
+			int const DXCoilNum,
+			int const SpeedNum,
+			Real64 const SpeedRatio,
+			bool const EP_UNUSED( IsCallbyWH ) //whether the call from the water heating loop or air loop, true = from water heating loop
+		)
 		{
 			using VariableSpeedCoils::VarSpeedCoil;
 
@@ -1442,35 +1505,35 @@ namespace EnergyPlus {
 
 			switch (IntegratedHeatPumpUnits(DXCoilNum).CurMode)
 			{
-			case IdleMode:
+			case IHPOperationMode::IdleMode:
 				WaterVolFlowRate = 0.0; 
 				break;
-			case SCMode:
+			case IHPOperationMode::SCMode:
 				WaterVolFlowRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).WaterVolFlowRate;
 				break;
-			case SHMode:
+			case IHPOperationMode::SHMode:
 				WaterVolFlowRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).WaterVolFlowRate;
 				break;
-			case DWHMode:
+			case IHPOperationMode::DWHMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex;
 				if (1 == SpeedNum)  WaterVolFlowRate = VarSpeedCoil(IHPCoilIndex).MSRatedWaterVolFlowRate(SpeedNum);
 				else WaterVolFlowRate = SpeedRatio * VarSpeedCoil(IHPCoilIndex).MSRatedWaterVolFlowRate(SpeedNum) +
 					(1.0 - SpeedRatio) * VarSpeedCoil(IHPCoilIndex).MSRatedWaterVolFlowRate(SpeedNum - 1);
 				break;
-			case SCWHMatchSCMode:
+			case IHPOperationMode::SCWHMatchSCMode:
 				WaterVolFlowRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex).WaterVolFlowRate;
 				break;
-			case SCWHMatchWHMode:
+			case IHPOperationMode::SCWHMatchWHMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex;
 				if (1 == SpeedNum)  WaterVolFlowRate = VarSpeedCoil(IHPCoilIndex).MSRatedWaterVolFlowRate(SpeedNum);
 				else WaterVolFlowRate = SpeedRatio * VarSpeedCoil(IHPCoilIndex).MSRatedWaterVolFlowRate(SpeedNum) +
 					(1.0 - SpeedRatio) * VarSpeedCoil(IHPCoilIndex).MSRatedWaterVolFlowRate(SpeedNum - 1);
 				break;
-			case SCDWHMode:
+			case IHPOperationMode::SCDWHMode:
 				WaterVolFlowRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCDWHWHCoilIndex).WaterVolFlowRate;
 				break;
-			case SHDWHElecHeatOffMode:
-			case SHDWHElecHeatOnMode:
+			case IHPOperationMode::SHDWHElecHeatOffMode:
+			case IHPOperationMode::SHDWHElecHeatOnMode:
 				WaterVolFlowRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHDWHWHCoilIndex).WaterVolFlowRate;
 				break;
 			default:
@@ -1482,9 +1545,12 @@ namespace EnergyPlus {
 		}
 
 		Real64
-			GetAirMassFlowRateIHP(int const DXCoilNum, int const SpeedNum, Real64 const SpeedRatio,
+		GetAirMassFlowRateIHP(
+			int const DXCoilNum,
+			int const SpeedNum,
+			Real64 const SpeedRatio,
 			bool const IsCallbyWH //whether the call from the water heating loop or air loop, true = from water heating loop
-			)
+		)
 		{
 			using VariableSpeedCoils::VarSpeedCoil;
 
@@ -1505,10 +1571,10 @@ namespace EnergyPlus {
 			FlowScale = 0.0;
 			switch (IntegratedHeatPumpUnits(DXCoilNum).CurMode)
 			{
-			case IdleMode:
+			case IHPOperationMode::IdleMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex;
 				break;
-			case SCMode:
+			case IHPOperationMode::SCMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex;
 				if (false == IsCallbyWH)
 				{
@@ -1516,18 +1582,18 @@ namespace EnergyPlus {
 				}
 
 				break;
-			case SHMode:
+			case IHPOperationMode::SHMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex;
 				if (false == IsCallbyWH)
 				{
 					FlowScale = IntegratedHeatPumpUnits(DXCoilNum).HeatVolFlowScale;
 				}
 				break;
-			case DWHMode:
+			case IHPOperationMode::DWHMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex;
 				FlowScale = 1.0;
 				break;
-			case SCWHMatchSCMode:
+			case IHPOperationMode::SCWHMatchSCMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex;
 				FlowScale = IntegratedHeatPumpUnits(DXCoilNum).CoolVolFlowScale;
 				if (true == IsCallbyWH)
@@ -1536,7 +1602,7 @@ namespace EnergyPlus {
 					AirMassFlowRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex).AirMassFlowRate;
 				}
 				break;
-			case SCWHMatchWHMode:
+			case IHPOperationMode::SCWHMatchWHMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex;
 				FlowScale = IntegratedHeatPumpUnits(DXCoilNum).CoolVolFlowScale;
 				if (false == IsCallbyWH)
@@ -1545,7 +1611,7 @@ namespace EnergyPlus {
 					AirMassFlowRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex).AirMassFlowRate;
 				}
 				break;
-			case SCDWHMode:
+			case IHPOperationMode::SCDWHMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilIndex;
 				FlowScale = IntegratedHeatPumpUnits(DXCoilNum).CoolVolFlowScale;
 				if (true == IsCallbyWH)
@@ -1554,8 +1620,8 @@ namespace EnergyPlus {
 					AirMassFlowRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilIndex).AirMassFlowRate;
 				}
 				break;
-			case SHDWHElecHeatOffMode:
-			case SHDWHElecHeatOnMode:
+			case IHPOperationMode::SHDWHElecHeatOffMode:
+			case IHPOperationMode::SHDWHElecHeatOnMode:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilIndex;
 				FlowScale = IntegratedHeatPumpUnits(DXCoilNum).HeatVolFlowScale;
 				if (true == IsCallbyWH)
@@ -1584,30 +1650,6 @@ namespace EnergyPlus {
 
 			return(AirMassFlowRate);
 		}
-		
-
-		//     NOTICE
-
-		//     Copyright (c) 1996-2015 The Board of Trustees of the University of Illinois
-		//     and The Regents of the University of California through Ernest Orlando Lawrence
-		//     Berkeley National Laboratory.  All rights reserved.
-
-		//     Portions of the EnergyPlus software package have been developed and copyrighted
-		//     by other individuals, companies and institutions.  These portions have been
-		//     incorporated into the EnergyPlus software package under license.   For a complete
-		//     list of contributors, see "Notice" located in main.cc.
-
-		//     NOTICE: The U.S. Government is granted for itself and others acting on its
-		//     behalf a paid-up, nonexclusive, irrevocable, worldwide license in this data to
-		//     reproduce, prepare derivative works, and perform publicly and display publicly.
-		//     Beginning five (5) years after permission to assert copyright is granted,
-		//     subject to two possible five year renewals, the U.S. Government is granted for
-		//     itself and others acting on its behalf a paid-up, non-exclusive, irrevocable
-		//     worldwide license in this data to reproduce, prepare derivative works,
-		//     distribute copies to the public, perform publicly and display publicly, and to
-		//     permit others to do so.
-
-		//     TRADEMARKS: EnergyPlus is a trademark of the US Department of Energy.
 
 	} // IntegratedHeatPumps
 

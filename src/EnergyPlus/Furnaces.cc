@@ -8775,8 +8775,7 @@ namespace Furnaces {
 		using IntegratedHeatPumps::IntegratedHeatPumpUnits; 
 		using IntegratedHeatPumps::GetMaxSpeedNumIHP; 
 		using IntegratedHeatPumps::GetCurWorkMode;
-		using IntegratedHeatPumps::DWHMode;
-		using IntegratedHeatPumps::SCWHMatchWHMode;
+		using IntegratedHeatPumps::IHPOperationMode;
 
 		// Locals
 		// SUBROUTINE ARGUMENT DEFINITIONS:
@@ -8804,7 +8803,7 @@ namespace Furnaces {
 		int i; // Speed index
 		static int ErrCountCyc( 0 ); // Counter used to minimize the occurrence of output warnings
 		static int ErrCountVar( 0 ); // Counter used to minimize the occurrence of output warnings
-		int IHPMode(0); 
+		IHPOperationMode IHPMode( IHPOperationMode::IdleMode ); 
 
 		// FLOW
 		SupHeaterLoad = 0.0;
@@ -8829,8 +8828,8 @@ namespace Furnaces {
 
 		if (true == Furnace(FurnaceNum).bIsIHP)
 		{
-			IHPMode = GetCurWorkMode(Furnace(FurnaceNum).CoolingCoilIndex);
-			if ((DWHMode == IHPMode) || (DWHMode == SCWHMatchWHMode)) //cooling capacity is a resultant
+			IHPMode = GetCurWorkMode( Furnace( FurnaceNum ).CoolingCoilIndex );
+			if ( ( IHPOperationMode::DWHMode == IHPMode ) || ( IHPOperationMode::SCWHMatchWHMode == IHPMode ) ) //cooling capacity is a resultant
 				return; 
 		}
 
