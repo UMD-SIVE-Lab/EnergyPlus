@@ -961,7 +961,12 @@ namespace WaterThermalTanks {
 		static Real64 HEffFTemp( 0.0 ); // Used for error checking desuperheater heating coils
 		bool Okay;
 		bool bIsVScoil( false ); // indicate if the heat pump WH coil is a variable-speed coil
+<<<<<<< HEAD
 		int IHPIndex( 0 ); // coil No for integrated heat pump
+=======
+		int IHPIndex(0);// coil No for integrated heat pump
+		std::string IHPCoilName("");
+>>>>>>> origin/ASIHPdev2
 
 		// Following allow for temporary storage of character strings but not saved in main structure
 		Real64 rho; // local fluid density
@@ -1970,7 +1975,12 @@ namespace WaterThermalTanks {
 					} else if ( HPWH.FanPlacement == BlowThru ) {
 						// set fan outlet node variable for use in setting Node(FanOutletNode)%MassFlowRateMax for fan object
 						if ( bIsVScoil ) {
-							HPWH.FanOutletNode = GetCoilInletNodeVariableSpeed(HPWH.DXCoilType, HPWH.DXCoilName, DXCoilErrFlag);
+							if (true == HPWH.bIsIHP){
+								HPWH.FanOutletNode = GetCoilInletNodeIHP(HPWH.DXCoilType, HPWH.DXCoilName, DXCoilErrFlag);
+							}
+							else{
+								HPWH.FanOutletNode = GetCoilInletNodeVariableSpeed(HPWH.DXCoilType, HPWH.DXCoilName, DXCoilErrFlag);
+							}
 						} else {
 							HPWH.FanOutletNode = DXCoil( HPWH.DXCoilNum ).AirInNode;
 						}
@@ -5586,6 +5596,11 @@ namespace WaterThermalTanks {
 			DataLoopNode::NodeData const & HPWHCondWaterInletNode = DataLoopNode::Node(HeatPump.CondWaterInletNode);
 			DataLoopNode::NodeData const & HPWHCondWaterOutletNode = DataLoopNode::Node(HeatPump.CondWaterOutletNode);
 			HPWHCondenserDeltaT = HPWHCondWaterOutletNode.Temp - HPWHCondWaterInletNode.Temp;
+
+			if ((true == HPWaterHeater(Tank.HeatPumpNum).bIsIHP) && (HPWHCondenserDeltaT < 0))
+			{
+				HPWHCondenserDeltaT = 0.0;
+			}
 		}
 		assert( HPWHCondenserDeltaT >= 0 );
 
@@ -7354,12 +7369,26 @@ namespace WaterThermalTanks {
 		using Psychrometrics::PsyCpAirFnWTdb;
 		using Psychrometrics::RhoH2O;
 		using VariableSpeedCoils::SimVariableSpeedCoils;
+<<<<<<< HEAD
 		using IntegratedHeatPump::IntegratedHeatPumps;
 		using IntegratedHeatPump::SimIHP; 
 		using IntegratedHeatPump::GetLowSpeedNumIHP; 
 		using IntegratedHeatPump::GetMaxSpeedNumIHP;
 		using IntegratedHeatPump::GetCurWorkMode; 
 		using IntegratedHeatPump::IHPOperationMode; 
+=======
+		using IntegratedHeatPumps::IntegratedHeatPumpUnits;
+		using IntegratedHeatPumps::SimIHP; 
+		using IntegratedHeatPumps::GetLowSpeedNumIHP; 
+		using IntegratedHeatPumps::GetMaxSpeedNumIHP;
+		using IntegratedHeatPumps::GetCurWorkMode; 
+		using IntegratedHeatPumps::SCDWHMode;
+		using IntegratedHeatPumps::DWHMode; 
+		using IntegratedHeatPumps::SCWHMatchWHMode;
+		using IntegratedHeatPumps::SHDWHElecHeatOffMode;
+		using IntegratedHeatPumps::ConnectIHP;
+		using IntegratedHeatPumps::DisconnectIHP;
+>>>>>>> origin/ASIHPdev2
 
 		// Locals
 		// SUBROUTINE ARGUMENT DEFINITIONS:
@@ -7467,35 +7496,53 @@ namespace WaterThermalTanks {
 			if (MaxSpeedNum > 0) {
 				VSCoilNum = HeatPump.DXCoilNum; 
 
+<<<<<<< HEAD
 				if (true == HeatPump.bIsIHP) VSCoilNum = IntegratedHeatPumps(VSCoilNum).SCWHCoilIndex; 
+=======
+				if (true == HeatPump.bIsIHP){
+					//ConnectIHP(VSCoilNum);
+					VSCoilNum = IntegratedHeatPumpUnits(VSCoilNum).SCWHCoilIndex;
+
+				}
+>>>>>>> origin/ASIHPdev2
 				//set the SCWH mode
 				SpeedRatio = 1.0;
 				SpeedNum = 1;
 				if (HeatPump.FanPlacement == BlowThru) {
 					SimulateFanComponents(HeatPump.FanName, FirstHVACIteration, HeatPump.FanNum);
 					SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
-					SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+					if (true == HeatPump.bIsIHP) 
+						SimVariableSpeedCoils("", VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+					else 
+						SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
 				} else {
 					SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
-					SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+					if (true == HeatPump.bIsIHP)
+						SimVariableSpeedCoils("", VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+					else
+						SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
 					SimulateFanComponents(HeatPump.FanName, FirstHVACIteration, HeatPump.FanNum);
 				}
 
 				//set the DWH mode
 				if (true == HeatPump.bIsIHP)
 				{
+<<<<<<< HEAD
 					VSCoilNum = IntegratedHeatPumps(VSCoilNum).DWHCoilIndex;
+=======
+					VSCoilNum = IntegratedHeatPumpUnits(HeatPump.DXCoilNum).DWHCoilIndex;
+>>>>>>> origin/ASIHPdev2
 
 					if (VSCoilNum > 0)// if DWH coil exists
 					{
 						if (HeatPump.FanPlacement == BlowThru) {
 							SimulateFanComponents(HeatPump.FanName, FirstHVACIteration, HeatPump.FanNum);
 							SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
-							SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+							SimVariableSpeedCoils("", VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
 						}
 						else {
 							SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
-							SimVariableSpeedCoils(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+							SimVariableSpeedCoils("", VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
 							SimulateFanComponents(HeatPump.FanName, FirstHVACIteration, HeatPump.FanNum);
 						}
 					}
@@ -7640,11 +7687,26 @@ namespace WaterThermalTanks {
 
 					if (true == IntegratedHeatPumps(HeatPump.DXCoilNum).CheckWHCall) 
 					{
+<<<<<<< HEAD
 						VSCoilNum = IntegratedHeatPumps(VSCoilNum).DWHCoilIndex;
 						if (VSCoilNum <= 0 ) VSCoilNum = IntegratedHeatPumps(VSCoilNum).SCWHCoilIndex;
+=======
+						VSCoilNum = IntegratedHeatPumpUnits(HeatPump.DXCoilNum).DWHCoilIndex;
+						if (VSCoilNum <= 0){ VSCoilNum = IntegratedHeatPumpUnits(HeatPump.DXCoilNum).SCWHCoilIndex; 
+							IntegratedHeatPumpUnits(HeatPump.DXCoilNum).CurMode = IntegratedHeatPumps::SCDWHMode; 
+						}
+						else{
+							IntegratedHeatPumpUnits(HeatPump.DXCoilNum).CurMode = IntegratedHeatPumps::DWHMode;
+						}
+
+						//RESET THE FLOW RATES, FOR CHECKING LOAD
+						SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
+>>>>>>> origin/ASIHPdev2
 
 						SimVariableSpeedCoils
-							(HeatPump.DXCoilName, VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+							("", VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+
+						IntegratedHeatPumpUnits(HeatPump.DXCoilNum).CurMode = IHPMode; 
 					}
 					else
 					{
@@ -7730,9 +7792,8 @@ namespace WaterThermalTanks {
 
 				// Re-calculate the HPWH Coil to get the correct heat transfer rate.
 				Node(HPWaterInletNode).Temp = Tank.SourceOutletTemp;
-				if ((MaxSpeedNum > 0) && (true == bIterSpeed)){
+				if (MaxSpeedNum > 0){
 					SpeedRatio = 1.0;
-					bIterSpeed = false; 
 					SpeedNum = 1;
 
 					SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio,
@@ -7740,14 +7801,19 @@ namespace WaterThermalTanks {
 
 					if (true == HeatPump.bIsIHP)
 					{
-						SimIHP(HeatPump.DXCoilName, HeatPump.DXCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0,
-							true, false, 1.0);
+						if (true == bIterSpeed)
+						{
+							SimIHP(HeatPump.DXCoilName, HeatPump.DXCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0,
+								true, false, 1.0);
+						}
 					}
 					else
 					{
 						SimVariableSpeedCoils(HeatPump.DXCoilName, HeatPump.DXCoilNum,
 							CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
 					}
+
+					bIterSpeed = false;
 
 				} else{
 					CalcHPWHDXCoil(HeatPump.DXCoilNum, HPPartLoadRatio);
@@ -8068,6 +8134,8 @@ namespace WaterThermalTanks {
 			HeatPump.HPWaterHeaterLatentCapacity = Node( HPAirOutletNode ).MassFlowRate * ( Node( HPAirOutletNode ).HumRat - Node( HPAirInletNode ).HumRat );
 
 		}}
+
+		//if (true == HeatPump.bIsIHP) DisconnectIHP(VSCoilNum);
 
 	}
 

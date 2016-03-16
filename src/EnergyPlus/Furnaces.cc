@@ -344,7 +344,13 @@ namespace Furnaces {
 		using General::TrimSigDigits;
 		using WaterToAirHeatPumpSimple::SimWatertoAirHPSimple;
 		using DataHeatBalFanSys::TempControlType;
+<<<<<<< HEAD
 		using IntegratedHeatPump::IntegratedHeatPumps; 
+=======
+		using IntegratedHeatPumps::IntegratedHeatPumpUnits; 
+		using IntegratedHeatPumps::ConnectIHP;
+		using IntegratedHeatPumps::DisconnectIHP;
+>>>>>>> origin/ASIHPdev2
 		//USE WaterCoils,               ONLY: SimulateWaterCoilComponents
 		//USE PlantUtilities,           ONLY: SetComponentFlowRate
 		//USE SteamCoils,               ONLY: SimulateSteamCoilComponents
@@ -538,7 +544,10 @@ namespace Furnaces {
 				HeatCoilLoad = 0.0;
 				if (true == Furnace(FurnaceNum).bIsIHP) IntegratedHeatPumps(Furnace(FurnaceNum).CoolingCoilIndex).ControlledZoneTemp =
 					Node(Furnace(FurnaceNum).NodeNumOfControlledZone).Temp;
+
+				//if (true == Furnace(FurnaceNum).bIsIHP) ConnectIHP(Furnace(FurnaceNum).CoolingCoilIndex);
 				SimVariableSpeedHP( FurnaceNum, FirstHVACIteration, ZoneLoad, MoistureLoad, OnOffAirFlowRatio );
+				//if (true == Furnace(FurnaceNum).bIsIHP) DisconnectIHP(Furnace(FurnaceNum).CoolingCoilIndex);
 			} else {
 				// Update the furnace flow rates
 				if ( ! FirstHVACIteration && Furnace( FurnaceNum ).OpMode == CycFanCycCoil && CoolingLoad && AirLoopControlInfo( AirLoopNum ).EconoActive ) {
@@ -3452,7 +3461,14 @@ namespace Furnaces {
 
 			if ( Furnace( FurnaceNum ).HeatingCoilType_Num == Coil_HeatingAirToAirVariableSpeed ) {
 				errFlag = false;
-				Furnace( FurnaceNum ).DesignHeatingCapacity = GetCoilCapacityVariableSpeed( HeatingCoilType, HeatingCoilName, errFlag );
+				if (true == Furnace(FurnaceNum).bIsIHP){
+					IHPCoilName = IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).SHCoilName;
+					Furnace(FurnaceNum).DesignHeatingCapacity = GetCoilCapacityVariableSpeed("Coil:Heating:DX:VariableSpeed", IHPCoilName, errFlag);
+				}
+				else{
+					Furnace(FurnaceNum).DesignHeatingCapacity = GetCoilCapacityVariableSpeed(HeatingCoilType, HeatingCoilName, errFlag);
+				}
+
 				if ( errFlag ) {
 					ShowContinueError( "...occurs in " + CurrentModuleObject + " = " + Alphas( 1 ) );
 					ErrorsFound = true;
