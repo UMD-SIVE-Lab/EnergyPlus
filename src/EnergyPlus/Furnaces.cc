@@ -344,13 +344,9 @@ namespace Furnaces {
 		using General::TrimSigDigits;
 		using WaterToAirHeatPumpSimple::SimWatertoAirHPSimple;
 		using DataHeatBalFanSys::TempControlType;
-<<<<<<< HEAD
-		using IntegratedHeatPump::IntegratedHeatPumps; 
-=======
-		using IntegratedHeatPumps::IntegratedHeatPumpUnits; 
-		using IntegratedHeatPumps::ConnectIHP;
-		using IntegratedHeatPumps::DisconnectIHP;
->>>>>>> origin/ASIHPdev2
+		using IntegratedHeatPump::IntegratedHeatPumps;
+		using IntegratedHeatPump::ConnectIHP;
+		using IntegratedHeatPump::DisconnectIHP;
 		//USE WaterCoils,               ONLY: SimulateWaterCoilComponents
 		//USE PlantUtilities,           ONLY: SetComponentFlowRate
 		//USE SteamCoils,               ONLY: SimulateSteamCoilComponents
@@ -3462,7 +3458,7 @@ namespace Furnaces {
 			if ( Furnace( FurnaceNum ).HeatingCoilType_Num == Coil_HeatingAirToAirVariableSpeed ) {
 				errFlag = false;
 				if (true == Furnace(FurnaceNum).bIsIHP){
-					IHPCoilName = IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).SHCoilName;
+					IHPCoilName = IntegratedHeatPumps(Furnace(FurnaceNum).CoolingCoilIndex).SHCoilName;
 					Furnace(FurnaceNum).DesignHeatingCapacity = GetCoilCapacityVariableSpeed("Coil:Heating:DX:VariableSpeed", IHPCoilName, errFlag);
 				}
 				else{

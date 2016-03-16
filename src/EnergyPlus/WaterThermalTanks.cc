@@ -961,12 +961,8 @@ namespace WaterThermalTanks {
 		static Real64 HEffFTemp( 0.0 ); // Used for error checking desuperheater heating coils
 		bool Okay;
 		bool bIsVScoil( false ); // indicate if the heat pump WH coil is a variable-speed coil
-<<<<<<< HEAD
 		int IHPIndex( 0 ); // coil No for integrated heat pump
-=======
-		int IHPIndex(0);// coil No for integrated heat pump
-		std::string IHPCoilName("");
->>>>>>> origin/ASIHPdev2
+		std::string IHPCoilName;
 
 		// Following allow for temporary storage of character strings but not saved in main structure
 		Real64 rho; // local fluid density
@@ -7369,26 +7365,14 @@ namespace WaterThermalTanks {
 		using Psychrometrics::PsyCpAirFnWTdb;
 		using Psychrometrics::RhoH2O;
 		using VariableSpeedCoils::SimVariableSpeedCoils;
-<<<<<<< HEAD
 		using IntegratedHeatPump::IntegratedHeatPumps;
 		using IntegratedHeatPump::SimIHP; 
 		using IntegratedHeatPump::GetLowSpeedNumIHP; 
 		using IntegratedHeatPump::GetMaxSpeedNumIHP;
 		using IntegratedHeatPump::GetCurWorkMode; 
-		using IntegratedHeatPump::IHPOperationMode; 
-=======
-		using IntegratedHeatPumps::IntegratedHeatPumpUnits;
-		using IntegratedHeatPumps::SimIHP; 
-		using IntegratedHeatPumps::GetLowSpeedNumIHP; 
-		using IntegratedHeatPumps::GetMaxSpeedNumIHP;
-		using IntegratedHeatPumps::GetCurWorkMode; 
-		using IntegratedHeatPumps::SCDWHMode;
-		using IntegratedHeatPumps::DWHMode; 
-		using IntegratedHeatPumps::SCWHMatchWHMode;
-		using IntegratedHeatPumps::SHDWHElecHeatOffMode;
-		using IntegratedHeatPumps::ConnectIHP;
-		using IntegratedHeatPumps::DisconnectIHP;
->>>>>>> origin/ASIHPdev2
+		using IntegratedHeatPump::IHPOperationMode;
+		using IntegratedHeatPump::ConnectIHP;
+		using IntegratedHeatPump::DisconnectIHP;
 
 		// Locals
 		// SUBROUTINE ARGUMENT DEFINITIONS:
@@ -7496,15 +7480,10 @@ namespace WaterThermalTanks {
 			if (MaxSpeedNum > 0) {
 				VSCoilNum = HeatPump.DXCoilNum; 
 
-<<<<<<< HEAD
-				if (true == HeatPump.bIsIHP) VSCoilNum = IntegratedHeatPumps(VSCoilNum).SCWHCoilIndex; 
-=======
-				if (true == HeatPump.bIsIHP){
-					//ConnectIHP(VSCoilNum);
-					VSCoilNum = IntegratedHeatPumpUnits(VSCoilNum).SCWHCoilIndex;
-
+				if ( true == HeatPump.bIsIHP ) {
+					//ConnectIHP( VSCoilNum );
+					VSCoilNum = IntegratedHeatPumps( VSCoilNum ).SCWHCoilIndex;
 				}
->>>>>>> origin/ASIHPdev2
 				//set the SCWH mode
 				SpeedRatio = 1.0;
 				SpeedNum = 1;
@@ -7527,11 +7506,7 @@ namespace WaterThermalTanks {
 				//set the DWH mode
 				if (true == HeatPump.bIsIHP)
 				{
-<<<<<<< HEAD
-					VSCoilNum = IntegratedHeatPumps(VSCoilNum).DWHCoilIndex;
-=======
-					VSCoilNum = IntegratedHeatPumpUnits(HeatPump.DXCoilNum).DWHCoilIndex;
->>>>>>> origin/ASIHPdev2
+					VSCoilNum = IntegratedHeatPumps( HeatPump.DXCoilNum ).DWHCoilIndex;
 
 					if (VSCoilNum > 0)// if DWH coil exists
 					{
@@ -7687,26 +7662,21 @@ namespace WaterThermalTanks {
 
 					if (true == IntegratedHeatPumps(HeatPump.DXCoilNum).CheckWHCall) 
 					{
-<<<<<<< HEAD
-						VSCoilNum = IntegratedHeatPumps(VSCoilNum).DWHCoilIndex;
-						if (VSCoilNum <= 0 ) VSCoilNum = IntegratedHeatPumps(VSCoilNum).SCWHCoilIndex;
-=======
-						VSCoilNum = IntegratedHeatPumpUnits(HeatPump.DXCoilNum).DWHCoilIndex;
-						if (VSCoilNum <= 0){ VSCoilNum = IntegratedHeatPumpUnits(HeatPump.DXCoilNum).SCWHCoilIndex; 
-							IntegratedHeatPumpUnits(HeatPump.DXCoilNum).CurMode = IntegratedHeatPumps::SCDWHMode; 
+						VSCoilNum = IntegratedHeatPumps( HeatPump.DXCoilNum ).DWHCoilIndex;
+						if ( VSCoilNum <= 0 ) {
+							VSCoilNum = IntegratedHeatPumps( HeatPump.DXCoilNum ).SCWHCoilIndex; 
+							IntegratedHeatPumps( HeatPump.DXCoilNum ).CurMode = IHPOperationMode::SCDWHMode; 
 						}
-						else{
-							IntegratedHeatPumpUnits(HeatPump.DXCoilNum).CurMode = IntegratedHeatPumps::DWHMode;
+						else {
+							IntegratedHeatPumps( HeatPump.DXCoilNum ).CurMode = IHPOperationMode::DWHMode;
 						}
 
 						//RESET THE FLOW RATES, FOR CHECKING LOAD
 						SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
->>>>>>> origin/ASIHPdev2
 
-						SimVariableSpeedCoils
-							("", VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
+						SimVariableSpeedCoils("", VSCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0, 1.0);
 
-						IntegratedHeatPumpUnits(HeatPump.DXCoilNum).CurMode = IHPMode; 
+						IntegratedHeatPumps(HeatPump.DXCoilNum).CurMode = IHPMode; 
 					}
 					else
 					{
