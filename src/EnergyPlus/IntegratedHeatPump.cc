@@ -209,6 +209,9 @@ namespace EnergyPlus {
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).SimFlag = false;
 				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
 
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex);
+
 				break; 
 			case SHMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).SimFlag = false;
@@ -225,9 +228,19 @@ namespace EnergyPlus {
 				{
 					UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
 				}
+
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex);
 				break; 
 			case DWHMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).SimFlag = true;
+
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex);
+
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
+
 				if (true == IsCallbyWH)
 				{
 					SimVariableSpeedCoils(BlankString, IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex,
@@ -235,6 +248,7 @@ namespace EnergyPlus {
 						SpeedNum, SpeedRatio, SensLoad, LatentLoad, OnOffAirFlowRat);
 					IntegratedHeatPumpUnits(DXCoilNum).TotalHeatingEnergyRate = VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).TotalHeatingEnergyRate;
 				}
+
 				break; 
 			case SCWHMatchSCMode:
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilIndex).SimFlag = true;
@@ -1602,7 +1616,7 @@ namespace EnergyPlus {
 				break;
 			default:
 				IHPCoilIndex = IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex;
-				FlowScale = 0.0;
+				FlowScale = 1.0;
 				break;
 			}
 
@@ -1621,6 +1635,106 @@ namespace EnergyPlus {
 			return(AirMassFlowRate);
 		}
 		
+		void
+			ConnectIHP(
+			int const WhichCoil // must match coil names for the coil type
+			)
+		{
+			using VariableSpeedCoils::SetAirNodes;
+			using VariableSpeedCoils::SetWaterNodes;
+
+
+			int DXCoilNum(0);
+			int InNode(0);
+			int OutNode(0);
+			bool ErrorsFound(false);
+
+			// Obtains and Allocates WatertoAirHP related parameters from input file
+			if (GetCoilsInputFlag) { //First time subroutine has been entered
+				GetIHPInput();
+				//    WaterIndex=FindGlycol('WATER') !Initialize the WaterIndex once
+				GetCoilsInputFlag = false;
+			}
+
+			if (WhichCoil != 0) {
+
+				//air node connections
+				DXCoilNum = WhichCoil; 
+				InNode = IntegratedHeatPumpUnits(DXCoilNum).AirCoolInletNodeNum;
+				OutNode = IntegratedHeatPumpUnits(DXCoilNum).AirHeatInletNodeNum;
+				SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCCoilName, ErrorsFound, InNode, OutNode);
+				SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilName, ErrorsFound, InNode, OutNode);
+				SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilName, ErrorsFound, InNode, OutNode);
+				SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCDWHWHCoilName, ErrorsFound, InNode, OutNode);
+
+				InNode = IntegratedHeatPumpUnits(DXCoilNum).AirHeatInletNodeNum;
+				OutNode = IntegratedHeatPumpUnits(DXCoilNum).AirOutletNodeNum;
+				SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SHCoilName, ErrorsFound, InNode, OutNode);
+				SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilName, ErrorsFound, InNode, OutNode);
+
+				//SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SHDWHWHCoilName, ErrorsFound, InNode, OutNode);//SHDWHWHCoil has outdoor air nodes
+
+				//water node connections
+				InNode = IntegratedHeatPumpUnits(DXCoilNum).WaterInletNodeNum;
+				OutNode = IntegratedHeatPumpUnits(DXCoilNum).WaterOutletNodeNum;
+				SetWaterNodes(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilName, ErrorsFound, InNode, OutNode);
+				SetWaterNodes(IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilName, ErrorsFound, InNode, OutNode);
+				SetWaterNodes(IntegratedHeatPumpUnits(DXCoilNum).SCDWHWHCoilName, ErrorsFound, InNode, OutNode);
+				SetWaterNodes(IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilName, ErrorsFound, InNode, OutNode);
+				SetWaterNodes(IntegratedHeatPumpUnits(DXCoilNum).SHDWHWHCoilName, ErrorsFound, InNode, OutNode);
+				SetWaterNodes(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilName, ErrorsFound, InNode, OutNode);
+				IntegratedHeatPumpUnits(DXCoilNum).NodeConnected = true;								
+			}
+
+		}
+
+		void
+			DisconnectIHP(
+			int const WhichCoil // must match coil names for the coil type
+			)
+		{
+			using VariableSpeedCoils::SetAirNodes;
+			using VariableSpeedCoils::SetWaterNodes;
+
+
+			int DXCoilNum(0);
+			int InNode(0);
+			int OutNode(0);
+			bool ErrorsFound(false);
+
+			// Obtains and Allocates WatertoAirHP related parameters from input file
+			if (GetCoilsInputFlag) { //First time subroutine has been entered
+				GetIHPInput();
+				//    WaterIndex=FindGlycol('WATER') !Initialize the WaterIndex once
+				GetCoilsInputFlag = false;
+			}
+
+			if (WhichCoil != 0) {
+
+				//air node connections
+				DXCoilNum = WhichCoil;
+				InNode = 0;
+				OutNode = 0;
+				//SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCCoilName, ErrorsFound, InNode, OutNode);
+				SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilName, ErrorsFound, InNode, OutNode);
+				SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCDWHCoolCoilName, ErrorsFound, InNode, OutNode);
+				SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SCDWHWHCoilName, ErrorsFound, InNode, OutNode);
+
+				InNode = 0;
+				OutNode = 0;
+				//SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SHCoilName, ErrorsFound, InNode, OutNode);
+				SetAirNodes(IntegratedHeatPumpUnits(DXCoilNum).SHDWHHeatCoilName, ErrorsFound, InNode, OutNode);
+
+				//water node connections
+				InNode = 0;
+				OutNode = 0;
+				SetWaterNodes(IntegratedHeatPumpUnits(DXCoilNum).SCWHCoilName, ErrorsFound, InNode, OutNode);
+				//SetWaterNodes(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilName, ErrorsFound, InNode, OutNode);
+				IntegratedHeatPumpUnits(DXCoilNum).NodeConnected = false;
+			}
+
+
+		}
 
 		//     NOTICE
 

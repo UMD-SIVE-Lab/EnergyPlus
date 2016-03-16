@@ -5497,7 +5497,7 @@ namespace VariableSpeedCoils {
 		IndexNum = FindItemInList( CoilName, VarSpeedCoil );
 
 		if ( IndexNum == 0 ) {
-			ShowSevereError( "GetCoilIndexVariableSpeed: Could not find CoilType=\"" + CoilType + "\" with Name=\"" + CoilName + "\"" );
+		//	ShowSevereError( "GetCoilIndexVariableSpeed: Could not find CoilType=\"" + CoilType + "\" with Name=\"" + CoilName + "\"" );//screen the message for IHP coil call
 			ErrorsFound = true;
 		}
 

@@ -401,6 +401,17 @@ namespace IntegratedHeatPumps {
 		int const Mode,//mode coil type
 		bool & ErrorsFound // set to true if problem
 		);
+
+	void
+		ConnectIHP(
+		int const WhichCoil // must match coil names for the coil type
+		);
+
+	void
+		DisconnectIHP(
+		int const WhichCoil // must match coil names for the coil type
+		);
+
 	
 	//     NOTICE
 
