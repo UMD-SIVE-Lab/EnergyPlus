@@ -1785,6 +1785,11 @@ namespace BranchNodeConnections {
 				if ( CompSets( Count ).InletNodeName == CompSets( Other ).InletNodeName ) continue;
 				if ( CompSets( Count ).OutletNodeName == CompSets( Other ).OutletNodeName ) continue;
 				if ( AlreadyNoted( Count ) ) continue;
+
+				if ("COILSYSTEM:INTEGRATEDHEATPUMP:AIRSOURCE" == CompSets(Count).CType)	{
+					continue; //ignore the error for IHP objects, BOS, 03/2016
+				}
+
 				//  All other values must match
 				AlreadyNoted( Other ) = true;
 				ShowSevereError( "Same component name and type has differing Node Names." );
