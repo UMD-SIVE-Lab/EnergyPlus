@@ -4800,15 +4800,21 @@ namespace VariableSpeedCoils {
 		if (EvapInletNode != 0) {
 			if (CBFSpeed > 0.999) CBFSpeed = 0.999;
 
-			hDelta = QLoadTotal / LoadSideMassFlowRate;
-			hADP = LoadSideInletEnth - hDelta / (1.0 - CBFSpeed);
-			tADP = PsyTsatFnHPb(hADP, LoadPressure, RoutineName);
-			wADP = PsyWFnTdbH(tADP, hADP, RoutineName);
-			hTinwADP = PsyHFnTdbW(LoadSideInletDBTemp, wADP);
-			if ((LoadSideInletEnth - hADP) > 1.e-10) {
-				SHR = min((hTinwADP - hADP) / (LoadSideInletEnth - hADP), 1.0);
-			} else {
-				SHR = 1.0;
+			if (CBFSpeed < 0.001){
+				SHR = 1.0; 
+			}
+			else{
+				hDelta = QLoadTotal / LoadSideMassFlowRate;
+				hADP = LoadSideInletEnth - hDelta / (1.0 - CBFSpeed);
+				tADP = PsyTsatFnHPb(hADP, LoadPressure, RoutineName);
+				wADP = PsyWFnTdbH(tADP, hADP, RoutineName);
+				hTinwADP = PsyHFnTdbW(LoadSideInletDBTemp, wADP);
+				if ((LoadSideInletEnth - hADP) > 1.e-10) {
+					SHR = min((hTinwADP - hADP) / (LoadSideInletEnth - hADP), 1.0);
+				}
+				else {
+					SHR = 1.0;
+				}
 			}
 		}
 
@@ -6571,30 +6577,38 @@ namespace VariableSpeedCoils {
 
 			}
 
-			//   Calculate apparatus dew point conditions using TotCap and CBF
-			hDelta = TotCapCalc / AirMassFlow;
-			hADP = InletEnthalpy - hDelta / ( 1.0 - CBF );
-			tADP = PsyTsatFnHPb( hADP, Pressure );
-			wADP = PsyWFnTdbH( tADP, hADP );
-			hTinwADP = PsyHFnTdbW( InletDryBulb, wADP );
-			SHRCalc = min( ( hTinwADP - hADP ) / ( InletEnthalpy - hADP ), 1.0 );
-			//   Check for dry evaporator conditions (win < wadp)
-			if ( wADP > InletHumRatCalc || ( Counter >= 1 && Counter < MaxIter ) ) {
-				if ( InletHumRatCalc == 0.0 ) InletHumRatCalc = 0.00001;
-				werror = ( InletHumRatCalc - wADP ) / InletHumRatCalc;
-				//     Increase InletHumRatCalc at constant inlet air temp to find coil dry-out point. Then use the
-				//     capacity at the dry-out point to determine exiting conditions from coil. This is required
-				//     since the TotCapTempModFac doesn't work properly with dry-coil conditions.
-				InletHumRatCalc = RF * wADP + ( 1.0 - RF ) * InletHumRatCalc;
-				InletWetBulbCalc = PsyTwbFnTdbWPb( InletDryBulb, InletHumRatCalc, Pressure );
-				++Counter;
-				if ( std::abs( werror ) > Tolerance ) {
-					LoopOn = true; //go to 50   ! Recalculate with modified inlet conditions
-				} else {
+			if (CBF < 0.001) {
+				SHRCalc = 1.0; 
+				LoopOn = false;
+			}
+			else{
+				//   Calculate apparatus dew point conditions using TotCap and CBF
+				hDelta = TotCapCalc / AirMassFlow;
+				hADP = InletEnthalpy - hDelta / (1.0 - CBF);
+				tADP = PsyTsatFnHPb(hADP, Pressure);
+				wADP = PsyWFnTdbH(tADP, hADP);
+				hTinwADP = PsyHFnTdbW(InletDryBulb, wADP);
+				SHRCalc = min((hTinwADP - hADP) / (InletEnthalpy - hADP), 1.0);
+				//   Check for dry evaporator conditions (win < wadp)
+				if (wADP > InletHumRatCalc || (Counter >= 1 && Counter < MaxIter)) {
+					if (InletHumRatCalc == 0.0) InletHumRatCalc = 0.00001;
+					werror = (InletHumRatCalc - wADP) / InletHumRatCalc;
+					//     Increase InletHumRatCalc at constant inlet air temp to find coil dry-out point. Then use the
+					//     capacity at the dry-out point to determine exiting conditions from coil. This is required
+					//     since the TotCapTempModFac doesn't work properly with dry-coil conditions.
+					InletHumRatCalc = RF * wADP + (1.0 - RF) * InletHumRatCalc;
+					InletWetBulbCalc = PsyTwbFnTdbWPb(InletDryBulb, InletHumRatCalc, Pressure);
+					++Counter;
+					if (std::abs(werror) > Tolerance) {
+						LoopOn = true; //go to 50   ! Recalculate with modified inlet conditions
+					}
+					else {
+						LoopOn = false;
+					}
+				}
+				else {
 					LoopOn = false;
 				}
-			} else {
-				LoopOn = false;
 			}
 		}
 
@@ -6667,7 +6681,7 @@ namespace VariableSpeedCoils {
 		if ( ADiff >= EXP_LowerLimit ) {
 			CBFAdj = std::exp( ADiff );
 		} else {
-			CBFAdj = 0.0;
+			CBFAdj = 1.0e-6;
 		}
 
 		return CBFAdj;
