@@ -233,6 +233,8 @@ namespace EnergyPlus {
 				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex);
 				break; 
 			case DWHMode:
+
+				//the below section is needed for clear up the mass flow rate in the air loop
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).SimFlag = true;
 
 				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SCCoilIndex).SimFlag = false;

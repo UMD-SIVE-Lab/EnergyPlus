@@ -261,8 +261,7 @@ namespace Furnaces {
 		using WaterToAirHeatPumpSimple::SimWatertoAirHPSimple;
 		using DataHeatBalFanSys::TempControlType;
 		using IntegratedHeatPumps::IntegratedHeatPumpUnits; 
-		using IntegratedHeatPumps::ConnectIHP;
-		using IntegratedHeatPumps::DisconnectIHP;
+
 		//USE WaterCoils,               ONLY: SimulateWaterCoilComponents
 		//USE PlantUtilities,           ONLY: SetComponentFlowRate
 		//USE SteamCoils,               ONLY: SimulateSteamCoilComponents
@@ -454,8 +453,13 @@ namespace Furnaces {
 			if ( Furnace( FurnaceNum ).HeatingCoilType_Num == Coil_HeatingAirToAirVariableSpeed ) {
 				// variable speed heat pump
 				HeatCoilLoad = 0.0;
-				if (true == Furnace(FurnaceNum).bIsIHP) IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).ControlledZoneTemp =
-					Node(Furnace(FurnaceNum).NodeNumOfControlledZone).Temp;
+				if (true == Furnace(FurnaceNum).bIsIHP){
+					IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).ControlledZoneTemp =
+						Node(Furnace(FurnaceNum).NodeNumOfControlledZone).Temp;
+					IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).IDFanID = Furnace(FurnaceNum).FanIndex; 
+					IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).IDFanName = BlankString;
+					IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).IDFanPlace = Furnace(FurnaceNum).FanPlace; 
+				}
 
 				//if (true == Furnace(FurnaceNum).bIsIHP) ConnectIHP(Furnace(FurnaceNum).CoolingCoilIndex);
 				SimVariableSpeedHP( FurnaceNum, FirstHVACIteration, ZoneLoad, MoistureLoad, OnOffAirFlowRatio );

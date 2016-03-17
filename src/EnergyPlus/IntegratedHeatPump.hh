@@ -130,6 +130,10 @@ namespace IntegratedHeatPumps {
 		Real64 MaxCoolAirMassFlow;//maximum air mass flow rate for heating mode
 		Real64 MaxCoolAirVolFlow;//maximum air volume flow rate for heating mode
 		bool IHPCoilsSized;//whether IHP coils have been sized
+
+		std::string IDFanName;//IHP indoor fan name
+		int IDFanID;//IHP indoor fan index
+		int IDFanPlace;//indoor fan placement
 				
 		// Default Constructor
 		IntegratedHeatPumpData() :
@@ -173,7 +177,9 @@ namespace IntegratedHeatPumps {
 			MaxHeatAirVolFlow(0),
 			MaxCoolAirMassFlow(0),
 			MaxCoolAirVolFlow(0),
-			IHPCoilsSized(false)
+			IHPCoilsSized(false),
+			IDFanID(0),
+			IDFanPlace(0)
 		{}
 
 		// Member Constructor
@@ -203,6 +209,7 @@ namespace IntegratedHeatPumps {
 			int const SHDWHHeatCoilIndex, // Index to SHDWH coil, heating part
 			std::string const &SHDWHWHCoilType_Num, // Numeric Equivalent for SHDWH Coil Type, water heating part
 			std::string const &SHDWHWHCoilName, // Numeric Equivalent for SHDWH Coil Type, water heating part
+			std::string const &IDFanName,// IHP indoor fan name
 			int const SHDWHWHCoilIndex, // Index to SHDWH coil, water heating part
 			int const AirCoolInletNodeNum, // Node Number of the Air Inlet
 			int const AirHeatInletNodeNum, // Node Number of the Air Inlet
@@ -237,7 +244,9 @@ namespace IntegratedHeatPumps {
 			Real64 const MaxHeatAirVolFlow,//maximum air volume flow rate for heating mode
 			Real64 const MaxCoolAirMassFlow,//maximum air mass flow rate for heating mode
 			Real64 const MaxCoolAirVolFlow,//maximum air volume flow rate for heating mode
-			bool const IHPCoilsSized//whether IHP coils have been sized
+			bool const IHPCoilsSized,//whether IHP coils have been sized
+			int const IDFanID, //indoor fan id
+			int const IDFanPlace//indoor fan placement
 		) :
 			Name( Name ),
 			IHPtype(IHPCoilType),
@@ -264,6 +273,7 @@ namespace IntegratedHeatPumps {
 			SHDWHHeatCoilIndex(SHDWHHeatCoilIndex),
 			SHDWHWHCoilType(SHDWHWHCoilType_Num), 
 			SHDWHWHCoilName(SHDWHWHCoilName),
+			IDFanName(IDFanName),
 			SHDWHWHCoilIndex(SHDWHWHCoilIndex), 
 			AirCoolInletNodeNum(AirCoolInletNodeNum), 
 			AirHeatInletNodeNum(AirHeatInletNodeNum),
@@ -298,8 +308,9 @@ namespace IntegratedHeatPumps {
 			MaxHeatAirVolFlow(MaxHeatAirVolFlow),//maximum air volume flow rate for heating mode
 			MaxCoolAirMassFlow(MaxCoolAirMassFlow),//maximum air mass flow rate for heating mode
 			MaxCoolAirVolFlow(MaxCoolAirVolFlow),//maximum air volume flow rate for heating mode
-			IHPCoilsSized(IHPCoilsSized)//whether IHP coils have been sized
-
+			IHPCoilsSized(IHPCoilsSized),//whether IHP coils have been sized
+			IDFanID(IDFanID),
+			IDFanPlace(IDFanPlace)
 		{}
 
 	};
