@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // EnergyPlus, Copyright (c) 1996-2016, The Board of Trustees of the University of Illinois and
 // The Regents of the University of California, through Lawrence Berkeley National Laboratory
 // (subject to receipt of any required approvals from the U.S. Dept. of Energy). All rights
@@ -56,10 +57,13 @@
 // computer software, distribute, and sublicense such enhancements or derivative works thereof,
 // in binary and source code form.
 
+=======
+>>>>>>> origin/ASIHPdev3
 #ifndef IntegratedHeatPumps_hh_INCLUDED
 #define IntegratedHeatPumps_hh_INCLUDED
 
 // ObjexxFCL Headers
+<<<<<<< HEAD
 #include <ObjexxFCL/Array1D.fwd.hh>
 #include <ObjexxFCL/Optional.fwd.hh>
 
@@ -72,11 +76,31 @@ namespace IntegratedHeatPump {
 
 	// Using/Aliasing
 	// Using/Aliasing
+=======
+#include <ObjexxFCL/Array1D.hh>
+#include <ObjexxFCL/Optional.hh>
+
+// EnergyPlus Headers
+#include <EnergyPlus.hh>
+#include <VariableSpeedCoils.hh>
+#include <DataSizing.hh>
+#include <DataGlobals.hh>
+#include <DataHVACGlobals.hh>
+
+namespace EnergyPlus {
+
+namespace IntegratedHeatPumps {
+
+	// Using/Aliasing
+	// Using/Aliasing
+	using VariableSpeedCoils::MaxSpedLevels;
+>>>>>>> origin/ASIHPdev3
 
 	// Data
 	//MODULE PARAMETER DEFINITIONS
 
 	// Identifier is VarSpeedCoil
+<<<<<<< HEAD
 	extern bool GetCoilsInputFlag; // Flag set to make sure you get input once
 
 	// operation mode
@@ -91,6 +115,21 @@ namespace IntegratedHeatPump {
 		SHDWHElecHeatOffMode,
 		SHDWHElecHeatOnMode
 	};
+=======
+	extern int NumIHPs; //counter for all integrated heat pumps including air-source and water-source
+	extern bool GetCoilsInputFlag; // Flag set to make sure you get input once
+
+	// operation mode
+	int const IdleMode(0);
+	int const SCMode(1);
+	int const SHMode(2);
+	int const DWHMode(3);
+	int const SCWHMatchSCMode(4);
+	int const SCWHMatchWHMode(5);
+	int const SCDWHMode(6);
+	int const SHDWHElecHeatOffMode(7);
+	int const SHDWHElecHeatOnMode(8);
+>>>>>>> origin/ASIHPdev3
 
 	// SUBROUTINE SPECIFICATIONS FOR MODULE
 
@@ -171,7 +210,11 @@ namespace IntegratedHeatPump {
 		int WHtankID; 
 		bool IsWHCallAvail;//whether water heating call available
 		bool CheckWHCall; 
+<<<<<<< HEAD
 		IHPOperationMode CurMode; //current working mode
+=======
+		int CurMode; //current working mode
+>>>>>>> origin/ASIHPdev3
 		Real64 ControlledZoneTemp; 
 		Real64 WaterFlowAccumVol;// water flow accumulated volume
 		Real64 SHDWHRunTime; 
@@ -184,6 +227,7 @@ namespace IntegratedHeatPump {
 		Real64 MaxCoolAirMassFlow;//maximum air mass flow rate for heating mode
 		Real64 MaxCoolAirVolFlow;//maximum air volume flow rate for heating mode
 		bool IHPCoilsSized;//whether IHP coils have been sized
+<<<<<<< HEAD
 				
 		// Default Constructor
 		IntegratedHeatPumpData() :
@@ -228,16 +272,81 @@ namespace IntegratedHeatPump {
 			MaxCoolAirMassFlow( 0 ),
 			MaxCoolAirVolFlow( 0 ),
 			IHPCoilsSized( false )
+=======
+
+		std::string IDFanName;//IHP indoor fan name
+		int IDFanID;//IHP indoor fan index
+		int IDFanPlace;//indoor fan placement
+		
+		int ODAirInletNodeNum; // oudoor coil inlet Nod
+		int ODAirOutletNodeNum; // oudoor coil outlet Nod
+
+		// Default Constructor
+		IntegratedHeatPumpData() :
+			SCCoilIndex(0),
+			SHCoilIndex(0),
+			SCWHCoilIndex(0),
+			DWHCoilIndex(0),
+			SCDWHCoolCoilIndex(0),
+			SCDWHWHCoilIndex(0),
+			SHDWHHeatCoilIndex(0),
+			SHDWHWHCoilIndex(0),
+			AirCoolInletNodeNum(0),
+			AirHeatInletNodeNum(0),
+			AirOutletNodeNum(0),
+			WaterInletNodeNum(0),
+			WaterOutletNodeNum(0),
+			WaterTankoutNod(0),
+			ODAirInletNodeNum(0), // oudoor coil inlet Nod
+			ODAirOutletNodeNum(0), // oudoor coil outlet Nod
+			ModeMatchSCWH(0),
+			MinSpedSCWH(1),
+			MinSpedSCDWH(1),
+			MinSpedSHDWH(1),
+			TindoorOverCoolAllow(0.0),
+			TambientOverCoolAllow(0.0),
+			TindoorWHHighPriority(0.0),
+			TambientWHHighPriority(0.0),
+			WaterVolSCDWH(0.0),
+			TimeLimitSHDWH(0.0),
+			WHtankType(0),
+			WHtankID(0),
+			IsWHCallAvail(false),
+			CheckWHCall(false),
+			CurMode(0),
+			ControlledZoneTemp(0),
+			WaterFlowAccumVol(0),
+			SHDWHRunTime(0),
+			NodeConnected(false),
+			TotalHeatingEnergyRate(0),
+			CoolVolFlowScale(0),
+			HeatVolFlowScale(0),
+			MaxHeatAirMassFlow(0),
+			MaxHeatAirVolFlow(0),
+			MaxCoolAirMassFlow(0),
+			MaxCoolAirVolFlow(0),
+			IHPCoilsSized(false),
+			IDFanID(0),
+			IDFanPlace(0)
+>>>>>>> origin/ASIHPdev3
 		{}
 
 	};
 
 	// Object Data
+<<<<<<< HEAD
 	extern Array1D< IntegratedHeatPumpData > IntegratedHeatPumps;
 
 	// Functions
 	void
 	clear_state();
+=======
+	extern Array1D< IntegratedHeatPumpData > IntegratedHeatPumpUnits;
+
+	// Functions
+	void
+		clear_state();
+>>>>>>> origin/ASIHPdev3
 
 	void
 	SimIHP(
@@ -254,7 +363,11 @@ namespace IntegratedHeatPump {
 		Real64 const SensLoad, // Sensible demand load [W]
 		Real64 const LatentLoad, // Latent demand load [W]
 		bool const IsCallbyWH, //whether the call from the water heating loop or air loop, true = from water heating loop
+<<<<<<< HEAD
 		bool const EP_UNUSED( FirstHVACIteration ), // TRUE if First iteration of simulation
+=======
+		bool const FirstHVACIteration, // TRUE if First iteration of simulation
+>>>>>>> origin/ASIHPdev3
 		Optional< Real64 const > OnOffAirFlowRat = _ // ratio of comp on to comp off air flow rate
 	);
 
@@ -266,6 +379,7 @@ namespace IntegratedHeatPump {
 	SizeIHP( int const CoilNum );
 	
 	void
+<<<<<<< HEAD
 	InitializeIHP( int const EP_UNUSED( DXCoilNum ) ); 
 
 	void
@@ -349,6 +463,109 @@ namespace IntegratedHeatPump {
 	DisconnectIHP(
 		int const WhichCoil // must match coil names for the coil type
 	);
+=======
+	InitializeIHP( int const DXCoilNum); 
+
+	void
+	UpdateIHP( int const DXCoilNum );
+
+	void
+		DecideWorkMode(int const DXCoilNum,
+		Real64 const SensLoad, // Sensible demand load [W]
+		Real64 const LatentLoad // Latent demand load [W]
+		);
+
+	int 
+		GetCurWorkMode(int const DXCoilNum);
+
+	int
+		GetLowSpeedNumIHP(int const DXCoilNum);
+	int
+		GetMaxSpeedNumIHP(int const DXCoilNum);
+
+	Real64
+		GetAirVolFlowRateIHP(int const DXCoilNum, int const SpeedNum, Real64 const SpeedRatio, 
+		bool const IsCallbyWH //whether the call from the water heating loop or air loop, true = from water heating loop
+		);
+
+	Real64
+		GetWaterVolFlowRateIHP(int const DXCoilNum, int const SpeedNum, Real64 const SpeedRatio,
+		bool const IsCallbyWH //whether the call from the water heating loop or air loop, true = from water heating loop
+		);
+
+	Real64
+		GetAirMassFlowRateIHP(int const DXCoilNum, int const SpeedNum, Real64 const SpeedRatio,
+		bool const IsCallbyWH //whether the call from the water heating loop or air loop, true = from water heating loop
+		);
+
+	int
+		GetCoilIndexIHP(
+		std::string const & CoilType, // must match coil types in this module
+		std::string const & CoilName, // must match coil names for the coil type
+		bool & ErrorsFound // set to true if problem
+		);
+
+	int
+		GetCoilInletNodeIHP(
+		std::string const & CoilType, // must match coil types in this module
+		std::string const & CoilName, // must match coil names for the coil type
+		bool & ErrorsFound // set to true if problem
+		);
+
+	Real64
+		GetDWHCoilCapacityIHP(
+		std::string const & CoilType, // must match coil types in this module
+		std::string const & CoilName, // must match coil names for the coil type
+		int const Mode,//mode coil type
+		bool & ErrorsFound // set to true if problem
+		);
+
+	int
+		GetIHPDWHCoilPLFFPLR(
+		std::string const & CoilType, // must match coil types in this module
+		std::string const & CoilName, // must match coil names for the coil type
+		int const Mode,//mode coil type
+		bool & ErrorsFound // set to true if problem
+		);
+
+	void ClearCoils
+		(int const DXCoilNum // coil ID
+		);
+
+	void
+		ConnectIHP(
+		int const WhichCoil // must match coil names for the coil type
+		);
+
+	void
+		DisconnectIHP(
+		int const WhichCoil // must match coil names for the coil type
+		);
+
+	
+	//     NOTICE
+
+	//     Copyright © 1996-2016 The Board of Trustees of the University of Illinois
+	//     and The Regents of the University of California through Ernest Orlando Lawrence
+	//     Berkeley National Laboratory.  All rights reserved.
+
+	//     Portions of the EnergyPlus software package have been developed and copyrighted
+	//     by other individuals, companies and institutions.  These portions have been
+	//     incorporated into the EnergyPlus software package under license.   For a complete
+	//     list of contributors, see "Notice" located in main.cc.
+
+	//     NOTICE: The U.S. Government is granted for itself and others acting on its
+	//     behalf a paid-up, nonexclusive, irrevocable, worldwide license in this data to
+	//     reproduce, prepare derivative works, and perform publicly and display publicly.
+	//     Beginning five (5) years after permission to assert copyright is granted,
+	//     subject to two possible five year renewals, the U.S. Government is granted for
+	//     itself and others acting on its behalf a paid-up, non-exclusive, irrevocable
+	//     worldwide license in this data to reproduce, prepare derivative works,
+	//     distribute copies to the public, perform publicly and display publicly, and to
+	//     permit others to do so.
+
+	//     TRADEMARKS: EnergyPlus is a trademark of the US Department of Energy.
+>>>>>>> origin/ASIHPdev3
 
 } // IntegratedHeatPumps
 

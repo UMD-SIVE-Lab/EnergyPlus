@@ -56,6 +56,7 @@
 // computer software, distribute, and sublicense such enhancements or derivative works thereof,
 // in binary and source code form.
 
+
 #ifndef WaterThermalTanks_hh_INCLUDED
 #define WaterThermalTanks_hh_INCLUDED
 
@@ -232,6 +233,7 @@ namespace WaterThermalTanks {
 			HPWHWrappedCondenserHeatingFrac(0.0)
 		{}
 
+
 	};
 
 	struct WaterHeaterSizingData
@@ -281,6 +283,7 @@ namespace WaterThermalTanks {
 			TotalFloorArea( 0.0 ),
 			TotalSolarCollectorArea( 0.0 )
 		{}
+
 
 	};
 
