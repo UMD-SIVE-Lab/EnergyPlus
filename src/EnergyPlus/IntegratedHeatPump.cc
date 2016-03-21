@@ -278,6 +278,22 @@ namespace EnergyPlus {
 					SimVariableSpeedCoils(BlankString, IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex,
 						CyclingScheme, MaxONOFFCyclesperHour, HPTimeConstant, FanDelayTime, CompOp, PartLoadFrac,
 						SpeedNum, SpeedRatio, SensLoad, LatentLoad, OnOffAirFlowRat);
+<<<<<<< HEAD
+=======
+				}
+				else
+				{
+					UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).SHCoilIndex);
+				}
+
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).SimFlag = false;
+				UpdateVarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex);
+				break; 
+			case DWHMode:
+
+				//the below section is needed for clear up the mass flow rate in the air loop
+				VarSpeedCoil(IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex).SimFlag = true;
+>>>>>>> origin/ASIHPdev2
 
 					SimVariableSpeedCoils(BlankString, IntegratedHeatPumpUnits(DXCoilNum).DWHCoilIndex,
 						CyclingScheme, MaxONOFFCyclesperHour, HPTimeConstant, FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRat);
@@ -1871,6 +1887,11 @@ namespace EnergyPlus {
 			Node(IntegratedHeatPumps(DXCoilNum).AirCoolInletNodeNum).MassFlowRateMax = AirMassFlowRate;
 			Node(IntegratedHeatPumps(DXCoilNum).AirHeatInletNodeNum).MassFlowRateMax = AirMassFlowRate;
 			Node(IntegratedHeatPumps(DXCoilNum).AirOutletNodeNum).MassFlowRateMax = AirMassFlowRate;
+
+			//set max air flow rate
+			Node(IntegratedHeatPumpUnits(DXCoilNum).AirCoolInletNodeNum).MassFlowRateMax = AirMassFlowRate; 
+			Node(IntegratedHeatPumpUnits(DXCoilNum).AirHeatInletNodeNum).MassFlowRateMax = AirMassFlowRate;
+			Node(IntegratedHeatPumpUnits(DXCoilNum).AirOutletNodeNum).MassFlowRateMax = AirMassFlowRate;
 
 			return(AirMassFlowRate);
 		}

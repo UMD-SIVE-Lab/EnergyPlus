@@ -3858,7 +3858,11 @@ namespace SystemReports {
 			// (should never happen, when this does happen enter appropriate equipment CASE statement above)
 			break;
 		case COIL_INTEGRATED_DX_VARIABLESPEED:
+<<<<<<< HEAD
 			break;
+=======
+			break; 
+>>>>>>> origin/ASIHPdev2
 		default:
 			found = 0;
 			if ( NumCompTypes > 0 ) {

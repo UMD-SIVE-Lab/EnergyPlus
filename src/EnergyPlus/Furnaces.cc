@@ -347,6 +347,10 @@ namespace Furnaces {
 		using DataHeatBalFanSys::TempControlType;
 		using IntegratedHeatPump::IntegratedHeatPumps;
 		using IntegratedHeatPumps::IntegratedHeatPumpUnits; 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/ASIHPdev2
 		//USE WaterCoils,               ONLY: SimulateWaterCoilComponents
 		//USE PlantUtilities,           ONLY: SetComponentFlowRate
 		//USE SteamCoils,               ONLY: SimulateSteamCoilComponents
@@ -539,11 +543,19 @@ namespace Furnaces {
 				// variable speed heat pump
 				HeatCoilLoad = 0.0;
 				if (true == Furnace(FurnaceNum).bIsIHP){
+<<<<<<< HEAD
 					IntegratedHeatPumps(Furnace(FurnaceNum).CoolingCoilIndex).ControlledZoneTemp =
 						Node(Furnace(FurnaceNum).NodeNumOfControlledZone).Temp;
 					IntegratedHeatPumps(Furnace(FurnaceNum).CoolingCoilIndex).IDFanID = Furnace(FurnaceNum).FanIndex; 
 					IntegratedHeatPumps(Furnace(FurnaceNum).CoolingCoilIndex).IDFanName = BlankString;
 					IntegratedHeatPumps(Furnace(FurnaceNum).CoolingCoilIndex).IDFanPlace = Furnace(FurnaceNum).FanPlace; 
+=======
+					IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).ControlledZoneTemp =
+						Node(Furnace(FurnaceNum).NodeNumOfControlledZone).Temp;
+					IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).IDFanID = Furnace(FurnaceNum).FanIndex; 
+					IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).IDFanName = BlankString;
+					IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).IDFanPlace = Furnace(FurnaceNum).FanPlace; 
+>>>>>>> origin/ASIHPdev2
 				}
 
 				SimVariableSpeedHP( FurnaceNum, FirstHVACIteration, ZoneLoad, MoistureLoad, OnOffAirFlowRatio );
@@ -9166,6 +9178,7 @@ namespace Furnaces {
 			}
 
 			if ( ( ( QZnReq < ( -1.0 * SmallLoad ) ) && ( OutDryBulbTemp > Furnace( FurnaceNum ).MinOATCompressor ) ) || ( QLatReq < ( -1.0 * SmallLoad ) ) ) { //COOLING MODE or dehumidification mode
+<<<<<<< HEAD
 
 				if (true == Furnace(FurnaceNum).bIsIHP) {
 					SimIHP(BlankString, Furnace(FurnaceNum).CoolingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, PartLoadFrac, SpeedNum, SpeedRatio, QZnReq, QLatReq, 
@@ -9173,14 +9186,36 @@ namespace Furnaces {
 				} else {
 					SimVariableSpeedCoils( BlankString, Furnace( FurnaceNum ).CoolingCoilIndex, Furnace( FurnaceNum ).OpMode, Furnace( FurnaceNum ).MaxONOFFCyclesperHour, Furnace( FurnaceNum ).HPTimeConstant, Furnace( FurnaceNum ).FanDelayTime, CompOp, PartLoadFrac, SpeedNum, SpeedRatio, QZnReq, QLatReq, OnOffAirFlowRatio );
 				}
+=======
+				
+				if (true == Furnace(FurnaceNum).bIsIHP){
+					SimIHP(BlankString, Furnace(FurnaceNum).CoolingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, PartLoadFrac, SpeedNum, SpeedRatio, QZnReq, QLatReq, 
+					false, false, OnOffAirFlowRatio);
+				}
+				else{
+					SimVariableSpeedCoils( BlankString, Furnace( FurnaceNum ).CoolingCoilIndex, Furnace( FurnaceNum ).OpMode, Furnace( FurnaceNum ).MaxONOFFCyclesperHour, Furnace( FurnaceNum ).HPTimeConstant, Furnace( FurnaceNum ).FanDelayTime, CompOp, PartLoadFrac, SpeedNum, SpeedRatio, QZnReq, QLatReq, OnOffAirFlowRatio );
+				}
+
+>>>>>>> origin/ASIHPdev2
 
 				SavePartloadRatio = PartLoadFrac;
 				SaveSpeedRatio = SpeedRatio;
 
 				SaveCompressorPLR = VarSpeedCoil( Furnace( FurnaceNum ).CoolingCoilIndex ).PartLoadRatio;
 			} else {
+<<<<<<< HEAD
 				if(false == Furnace(FurnaceNum).bIsIHP)
 					SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).CoolingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+=======
+				if (true == Furnace(FurnaceNum).bIsIHP)
+				{
+					//SimIHP(BlankString, Furnace(FurnaceNum).CoolingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0,
+					//false, false, OnOffAirFlowRatio);
+				}
+				else{
+					SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).CoolingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+				}
+>>>>>>> origin/ASIHPdev2
 			}
 
 			if ( Furnace( FurnaceNum ).FurnaceType_Num != UnitarySys_HeatCool ) {
@@ -9196,8 +9231,20 @@ namespace Furnaces {
 
 					SaveCompressorPLR = VarSpeedCoil( Furnace( FurnaceNum ).HeatingCoilIndex ).PartLoadRatio;
 				} else {
+<<<<<<< HEAD
 					if(false == Furnace(FurnaceNum).bIsIHP)
 						SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).HeatingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+=======
+					if (true == Furnace(FurnaceNum).bIsIHP)
+					{
+						//SimIHP(BlankString, Furnace(FurnaceNum).HeatingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0,
+						//	false, false, OnOffAirFlowRatio);
+					}
+					else
+					{
+						SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).HeatingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+					}
+>>>>>>> origin/ASIHPdev2
 				}
 			} else if ( Furnace( FurnaceNum ).CoolingCoilUpstream && ( Furnace( FurnaceNum ).FurnaceType_Num == UnitarySys_HeatCool ) ) {
 				// simulate furnace heating coil
@@ -9227,8 +9274,20 @@ namespace Furnaces {
 				SaveCompressorPLR = VarSpeedCoil( Furnace( FurnaceNum ).CoolingCoilIndex ).PartLoadRatio;
 			} else {
 
+<<<<<<< HEAD
 				if (false == Furnace(FurnaceNum).bIsIHP)
 					SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).CoolingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+=======
+				if (true == Furnace(FurnaceNum).bIsIHP)
+				{
+					//SimIHP(BlankString, Furnace(FurnaceNum).CoolingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0,
+					//	false, false, OnOffAirFlowRatio);
+				}
+				else
+				{
+					SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).CoolingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+				}
+>>>>>>> origin/ASIHPdev2
 			}
 
 			if ( Furnace( FurnaceNum ).FurnaceType_Num != UnitarySys_HeatCool ) {
@@ -9243,8 +9302,19 @@ namespace Furnaces {
 					SaveSpeedRatio = SpeedRatio;
 					SaveCompressorPLR = VarSpeedCoil( Furnace( FurnaceNum ).HeatingCoilIndex ).PartLoadRatio;
 				} else {
+<<<<<<< HEAD
 					if (false == Furnace(FurnaceNum).bIsIHP)
 						SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).HeatingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+=======
+					if (true == Furnace(FurnaceNum).bIsIHP)
+					{
+						//SimIHP(BlankString, Furnace(FurnaceNum).HeatingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0,
+							//false, false, OnOffAirFlowRatio);
+					}
+					else{
+						SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).HeatingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+					}
+>>>>>>> origin/ASIHPdev2
 				}
 			} else if ( Furnace( FurnaceNum ).CoolingCoilUpstream && ( Furnace( FurnaceNum ).FurnaceType_Num == UnitarySys_HeatCool ) ) {
 				// simulate furnace heating coil
@@ -9278,8 +9348,19 @@ namespace Furnaces {
 
 				SaveCompressorPLR = VarSpeedCoil( Furnace( FurnaceNum ).CoolingCoilIndex ).PartLoadRatio;
 			} else {
+<<<<<<< HEAD
 				if (false == Furnace(FurnaceNum).bIsIHP)
 					SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).CoolingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+=======
+				if (true == Furnace(FurnaceNum).bIsIHP)
+				{
+					//SimIHP(BlankString, Furnace(FurnaceNum).CoolingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0,
+					//	false, false, OnOffAirFlowRatio);
+				}
+				else{
+					SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).CoolingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+				}
+>>>>>>> origin/ASIHPdev2
 			}
 
 			if ( Furnace( FurnaceNum ).FurnaceType_Num != UnitarySys_HeatCool ) {
@@ -9295,8 +9376,19 @@ namespace Furnaces {
 					SaveSpeedRatio = SpeedRatio;
 					SaveCompressorPLR = VarSpeedCoil( Furnace( FurnaceNum ).HeatingCoilIndex ).PartLoadRatio;
 				} else {
+<<<<<<< HEAD
 					if (false == Furnace(FurnaceNum).bIsIHP)
 						SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).HeatingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+=======
+
+					if (true == Furnace(FurnaceNum).bIsIHP){
+					//	SimIHP(BlankString, Furnace(FurnaceNum).HeatingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0,
+						//	false, false, OnOffAirFlowRatio);
+					}
+					else{
+						SimVariableSpeedCoils(BlankString, Furnace(FurnaceNum).HeatingCoilIndex, Furnace(FurnaceNum).OpMode, Furnace(FurnaceNum).MaxONOFFCyclesperHour, Furnace(FurnaceNum).HPTimeConstant, Furnace(FurnaceNum).FanDelayTime, CompOp, 0.0, 1, 0.0, 0.0, 0.0, OnOffAirFlowRatio);
+					}
+>>>>>>> origin/ASIHPdev2
 				}
 			} else if ( Furnace( FurnaceNum ).CoolingCoilUpstream && ( Furnace( FurnaceNum ).FurnaceType_Num == UnitarySys_HeatCool ) ) {
 				// simulate furnace heating coil
