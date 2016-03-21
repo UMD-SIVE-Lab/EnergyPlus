@@ -7729,13 +7729,29 @@ namespace WaterThermalTanks {
 					else
 					{
 						SpeedNum = GetLowSpeedNumIHP(HeatPump.DXCoilNum);
+
+						SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
 						SimIHP(HeatPump.DXCoilName, HeatPump.DXCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0,
 							true, false, 1.0);
 
+<<<<<<< HEAD
 						if ( ( IHPOperationMode::SCWHMatchWHMode == IHPMode ) || ( IHPOperationMode::DWHMode == IHPMode ) ) {
 							bIterSpeed = true;
 						}
 						else if (IHPOperationMode::SHDWHElecHeatOffMode == IHPMode) // turn off heater element
+=======
+						if ((SCWHMatchWHMode == IHPMode) || (DWHMode == IHPMode))
+						{
+							bIterSpeed = true;
+						}
+						else
+						{
+							Tank.SourceMassFlowRate = IntegratedHeatPumpUnits(HeatPump.DXCoilNum).TankSourceWaterMassFlowRate; 
+							MdotWater = Tank.SourceMassFlowRate; 
+						}
+
+						if (SHDWHElecHeatOffMode == IHPMode)//turn off heater element
+>>>>>>> origin/ASIHPdev3
 						{
 							Tank.MaxCapacity = 0.0;
 							Tank.MinCapacity = 0.0;
@@ -7852,7 +7868,6 @@ namespace WaterThermalTanks {
 					for (i = LowSpeedNum; i <= MaxSpeedNum; ++i) {
 						SpeedNum = i;
 						SetVSHPWHFlowRates(WaterThermalTankNum, Tank.HeatPumpNum, SpeedNum, SpeedRatio, RhoWater, MdotWater, FirstHVACIteration);
-
 						if (true == HeatPump.bIsIHP)
 						{
 							SimIHP(HeatPump.DXCoilName, HeatPump.DXCoilNum, CycFanCycCoil, EMP1, EMP2, EMP3, 1, HPPartLoadRatio, SpeedNum, SpeedRatio, 0.0, 0.0,
@@ -8248,9 +8263,16 @@ namespace WaterThermalTanks {
 		// Using/Aliasing
 		using DataLoopNode::Node;
 		using Fans::SimulateFanComponents;
+<<<<<<< HEAD
 		using IntegratedHeatPump::GetAirVolFlowRateIHP;
 		using IntegratedHeatPump::GetWaterVolFlowRateIHP;
 		using IntegratedHeatPump::GetAirMassFlowRateIHP;
+=======
+		using IntegratedHeatPumps::GetAirVolFlowRateIHP; 
+		using IntegratedHeatPumps::GetWaterVolFlowRateIHP;
+		using IntegratedHeatPumps::GetAirMassFlowRateIHP;
+		using IntegratedHeatPumps::IntegratedHeatPumpUnits;
+>>>>>>> origin/ASIHPdev3
 		using Fans::Fan;
 
 		int DXCoilAirInletNode; // Inlet air node number of DX coil
@@ -8287,7 +8309,8 @@ namespace WaterThermalTanks {
 		}
 
 		MdotWater = HPWaterHeater(HPNum).OperatingWaterFlowRate * WaterDens;
-
+		WaterThermalTank(WaterThermalTankNum).SourceMassFlowRate = MdotWater;
+		
 		Node(DXCoilAirInletNode).MassFlowRate = MdotAir;
 		Node(HPWaterInletNode).MassFlowRate = MdotWater;
 		WaterThermalTank(WaterThermalTankNum).SourceMassFlowRate = MdotWater;

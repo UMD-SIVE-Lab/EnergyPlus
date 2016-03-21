@@ -9585,8 +9585,15 @@ namespace Furnaces {
 		using DataZoneEnergyDemands::CurDeadBandOrSetback;
 		using DataHVACGlobals::MSHPMassFlowRateLow;
 		using DataHVACGlobals::MSHPMassFlowRateHigh;
+<<<<<<< HEAD
 		using IntegratedHeatPump::GetAirMassFlowRateIHP;
 		using IntegratedHeatPump::GetMaxSpeedNumIHP;
+=======
+		using IntegratedHeatPumps::GetAirMassFlowRateIHP;
+		using IntegratedHeatPumps::GetMaxSpeedNumIHP; 
+		using IntegratedHeatPumps::IntegratedHeatPumpUnits; 
+		using IntegratedHeatPumps::SCWHMatchWHMode; 
+>>>>>>> origin/ASIHPdev3
 
 		// Locals
 		// SUBROUTINE ARGUMENT DEFINITIONS:
@@ -9696,7 +9703,17 @@ namespace Furnaces {
 					FanSpeedRatio = CompOnFlowRatio;
 				}
 			}
+<<<<<<< HEAD
 		}
+=======
+
+			if (SCWHMatchWHMode == IntegratedHeatPumpUnits(Furnace(FurnaceNum).CoolingCoilIndex).CurMode)
+			{
+				CompOnMassFlow = GetAirMassFlowRateIHP(Furnace(FurnaceNum).CoolingCoilIndex, SpeedNum, SpeedRatio, false);
+				AverageUnitMassFlow = CompOnMassFlow; 
+			};
+		}		
+>>>>>>> origin/ASIHPdev3
 		else {
 			if ( ! CurDeadBandOrSetback( Furnace( FurnaceNum ).ControlZoneNum ) && present( SpeedNum ) ) {
 				if ( Furnace( FurnaceNum ).HeatCoolMode == HeatingMode ) {
