@@ -279,7 +279,7 @@ namespace Furnaces {
 
 	// Functions
 	void
-		clear_state()
+	clear_state()
 	{
 		NumFurnaces = 0;
 		MySizeFlag.deallocate();
