@@ -45615,9 +45615,9 @@ Coil:Heating:DX:VariableSpeed,
         \note quadratic curve = a + b*ffa + c*ffa**2
         \note cubic curve = a + b*ffa + c*ffa**2 + d*ffa**3
         \note ffa = Fraction of the full load Air Flow
-						
-COILSYSTEM:INTEGRATEDHEATPUMP:AIRSOURCE,
-	   \memo This object is used for air-source integrated heat pump, a collection of its working modes.
+
+CoilSystem:IntegratedHeatPump:AirSource,
+       \memo This object is used for air-source integrated heat pump, a collection of its working modes.
   A1, \field Name
        \required-field
        \type alpha
@@ -45675,7 +45675,7 @@ COILSYSTEM:INTEGRATEDHEATPUMP:AIRSOURCE,
   A16, \field Heating Coil Name of Combined Space Heating and Water Heating Mode with Desuperheating
        \type object-list
        \object-list HeatingCoilsDXVariableSpeed
-	   \note Must match the name used in the corresponding Coil:Heating:DX:VariableSpeed object.   
+       \note Must match the name used in the corresponding Coil:Heating:DX:VariableSpeed object.   
   A17, \field Water Heating Coil Name of Combined Space Heating and Water Heating Mode with Desuperheating
        \type object-list
        \object-list HeatPumpWaterHeaterDXCoils
@@ -45737,127 +45737,6 @@ COILSYSTEM:INTEGRATEDHEATPUMP:AIRSOURCE,
        \minimum> 0
        \maximum< 10
 
-
-
-<<<<<<< HEAD
-CoilSystem:IntegratedHeatPump:AirSource,
-	   \memo This object is used for air-source integrated heat pump, a collection of its working modes.
-  A1 , \field Name
-       \required-field
-       \type alpha
-       \reference IntegratedHeatPumps
-       \note Unique name for this instance of an air-source integrated heat pump.
-  A2 , \field Indoor Air Cooling Coil Inlet Node Name
-       \required-field
-       \type alpha
-  A3 , \field Indoor Air Heating Coil Inlet Node Name
-       \required-field
-       \type alpha
-  A4 , \field Indoor Air Outlet Node Name
-       \required-field
-       \type alpha
-  A5 , \field Condenser Water Inlet Node
-       \required-field
-       \type alpha
-  A6 , \field Condenser Water Outlet Node
-       \required-field
-       \type alpha
-  A7 , \field Water Node to Monitor the Supply Hot Water Flow
-       \required-field
-       \type alpha
-  A8,  \field Coil Name of Space Cooling Mode
-       \required-field
-       \type object-list
-       \object-list CoolingCoilsDXVariableSpeed
-       \note Must match the name used in the corresponding Coil:Cooling:DX:VariableSpeed object.
-  A9,  \field Coil Name of Space Heating Mode
-       \type object-list
-       \object-list HeatingCoilsDXVariableSpeed
-       \note Must match the name used in the corresponding Coil:Heating:DX:VariableSpeed object.
-  A10, \field Coil Name of Dedicated Water Heating Mode
-       \type object-list
-       \object-list HeatPumpWaterHeaterDXCoils
-       \note Must match the name used in the corresponding Coil:WaterHeating:AirToWaterHeatPump:VariableSpeed object.
-  A11, \field Coil Name of Combined Space Cooling and Water Heating Mode with Full Condensing
-       \type object-list
-       \object-list HeatPumpWaterHeaterDXCoils
-       \note Must match the name used in the corresponding Coil:WaterHeating:AirToWaterHeatPump:VariableSpeed object.
-  A12, \field Cooling Coil Name of Combined Space Cooling and Water Heating Mode with Desuperheating
-       \type object-list
-       \object-list CoolingCoilsDXVariableSpeed
-       \note Must match the name used in the corresponding Coil:Cooling:DX:VariableSpeed object.
-  A13, \field Water Heating Coil Name of Combined Space Cooling and Water Heating Mode with Desuperheating
-       \type object-list
-       \object-list HeatPumpWaterHeaterDXCoils
-       \note Must match the name used in the corresponding Coil:WaterHeating:AirToWaterHeatPump:VariableSpeed object.	   
-  A14, \field Heating Coil Name of Combined Space Heating and Water Heating Mode with Desuperheating
-       \type object-list
-       \object-list HeatingCoilsDXVariableSpeed
-	   \note Must match the name used in the corresponding Coil:Heating:DX:VariableSpeed object.   
-  A15, \field Water Heating Coil Name of Combined Space Heating and Water Heating Mode with Desuperheating
-       \type object-list
-       \object-list HeatPumpWaterHeaterDXCoils
-       \note Must match the name used in the corresponding Coil:WaterHeating:AirToWaterHeatPump:VariableSpeed object.	   	   
-  N1 , \field Indoor Temperature Limit for SCWH Mode
-       \type real
-       \units C
-       \minimum> 15.0
-       \default 20.0
-       \note Indoor Temperature above which Indoor Overcooling is Allowed during Cooling Operation
-  N2 , \field Ambient Temperature Limit for SCWH Mode
-       \type real
-       \units C
-       \minimum>20.0
-       \default 27.0
-       \note Ambient Temperature above which Indoor Overcooling is Allowed during Cooling Operation
-  N3 , \field Indoor Temperature above Which WH has Higher Priority
-       \type real
-       \units C
-       \minimum> 15.0
-       \default 20.0
-       \note Indoor Temperature above which Water Heating has the higher priority and Space Heating Call Can be ignored. 
-  N4 , \field Ambient Temperature above Which WH has Higher Priority
-       \type real
-       \units C
-       \minimum> 15.0
-       \default 20.0
-       \note Ambient Temperature above which Water Heating has the higher priority and Space Heating Call Can be ignored. 
-  N5,  \field Flag to Indicate Load Control in SCWH Mode
-       \units dimensionless
-       \type integer
-       \default 0
-       \note 0: match space cooling load in SCWH mode, 1: match water heating load in SCWH mode
-  N6,  \field Minimum Speed Level for SCWH Mode
-       \units dimensionless
-       \type integer
-       \default 1
-       \minimum> 0
-       \maximum< 10
-  N7 , \field Maximum Water Flow Volume before Switching from SCDWH to SCWH Mode
-       \type real
-       \units m3
-       \default 0.0
-  N8,  \field Minimum Speed Level for SCDWH Mode
-       \units dimensionless
-       \type integer
-       \default 1
-       \minimum> 0
-       \maximum< 10
-  N9,  \field Maximum Running Time before Allowing Electric Res Heat Use during SHDWH Mode
-       \type real
-       \units s
-       \minimum> 0.0
-       \default 360.0
-  N10; \field Minimum Speed Level for SHDWH Mode
-       \units dimensionless
-       \type integer
-       \default 1
-       \minimum> 0
-       \maximum< 10
-
-=======
-		
->>>>>>> origin/ASIHPdev3
 Coil:Cooling:WaterToAirHeatPump:ParameterEstimation,
         \memo Direct expansion (DX) cooling coil for water-to-air heat pump (includes electric
         \memo compressor), single-speed, parameter estimation model. Optional inputs for moisture
@@ -53019,27 +52898,16 @@ AirLoopHVAC:UnitaryHeatPump:AirToAir,
         \type choice
         \key Coil:Heating:DX:SingleSpeed
         \key Coil:Heating:DX:VariableSpeed
-<<<<<<< HEAD
         \key CoilSystem:IntegratedHeatPump:AirSource
         \note  Only works with Coil:Heating:DX:SingleSpeed or
         \note Coil:Heating:DX:VariableSpeed or 
         \note CoilSystem:IntegratedHeatPump:AirSource
-=======
-		\key COILSYSTEM:INTEGRATEDHEATPUMP:AIRSOURCE
-        \note  Only works with Coil:Heating:DX:SingleSpeed or
-        \note Coil:Heating:DX:VariableSpeed or
-		\note COILSYSTEM:INTEGRATEDHEATPUMP:AIRSOURCE
->>>>>>> origin/ASIHPdev3
    A9,  \field Heating Coil Name
         \required-field
         \type object-list
         \object-list HeatingCoilsDXSingleSpeed
         \object-list HeatingCoilsDXVariableSpeed
-<<<<<<< HEAD
         \object-list IntegratedHeatPumps
-=======
-		\object-list IntegratedHeatPumps
->>>>>>> origin/ASIHPdev3
         \note  Needs to match in the DX heating coil object
    A10, \field Cooling Coil Object Type
         \required-field
@@ -53047,30 +52915,18 @@ AirLoopHVAC:UnitaryHeatPump:AirToAir,
         \key Coil:Cooling:DX:SingleSpeed
         \key Coil:Cooling:DX:VariableSpeed
         \key CoilSystem:Cooling:DX:HeatExchangerAssisted
-<<<<<<< HEAD
         \key CoilSystem:IntegratedHeatPump:AirSource
         \note Only works with Coil:Cooling:DX:SingleSpeed or
         \note CoilSystem:Cooling:DX:HeatExchangerAssisted or
         \note Coil:Cooling:DX:VariableSpeed or 
         \note CoilSystem:IntegratedHeatPump:AirSource
-=======
-		\key COILSYSTEM:INTEGRATEDHEATPUMP:AIRSOURCE
-        \note Only works with Coil:Cooling:DX:SingleSpeed or
-        \note CoilSystem:Cooling:DX:HeatExchangerAssisted or
-        \note Coil:Cooling:DX:VariableSpeed or
-		\note COILSYSTEM:INTEGRATEDHEATPUMP:AIRSOURCE
->>>>>>> origin/ASIHPdev3
    A11, \field Cooling Coil Name
         \required-field
         \note Needs to match in the DX cooling coil object
         \type object-list
         \object-list CoolingCoilsDXSingleSpeed
         \object-list CoolingCoilsDXVariableSpeed
-<<<<<<< HEAD
         \object-list IntegratedHeatPumps
-=======
-		\object-list IntegratedHeatPumps
->>>>>>> origin/ASIHPdev3
    A12, \field Supplemental Heating Coil Object Type
         \required-field
         \type choice
@@ -66895,28 +66751,17 @@ WaterHeater:HeatPump:PumpedCondenser,
        \type choice
        \key Coil:WaterHeating:AirToWaterHeatPump:Pumped
        \key Coil:WaterHeating:AirToWaterHeatPump:VariableSpeed
-<<<<<<< HEAD
        \key CoilSystem:IntegratedHeatPump:AirSource
        \default Coil:WaterHeating:AirToWaterHeatPump:Pumped
        \note Specify the type of DX coil used by this heat pump water heater. The only
        \note valid choice is Coil:WaterHeating:AirToWaterHeatPump:Pumped, Coil:WaterHeating:AirToWaterHeatPump:VariableSpeed, or CoilSystem:IntegratedHeatPump:AirSource.
-=======
-	   \key COILSYSTEM:INTEGRATEDHEATPUMP:AIRSOURCE
-       \default Coil:WaterHeating:AirToWaterHeatPump:Pumped
-       \note Specify the type of DX coil used by this heat pump water heater. The only
-       \note valid choice is Coil:WaterHeating:AirToWaterHeatPump:Pumped and Coil:WaterHeating:AirToWaterHeatPump:VariableSpeed, and COILSYSTEM:INTEGRATEDHEATPUMP:AIRSOURCE
->>>>>>> origin/ASIHPdev3
   A19, \field DX Coil Name
        \required-field
        \type object-list
        \object-list HeatPumpWaterHeaterDXCoilsPumped
        \object-list HeatPumpWaterHeaterDXCoilsVariableSpeed
        \object-list IntegratedHeatPumps
-<<<<<<< HEAD
-       \note Must match the name used in the corresponding Coil:WaterHeating:AirToWaterHeatPump:* object.
-=======
-       \note Must match the name used in the corresponding Coil:WaterHeating:AirToWaterHeatPump:* object, or COILSYSTEM:INTEGRATEDHEATPUMP:AIRSOURCE
->>>>>>> origin/ASIHPdev3
+       \note Must match the name used in the corresponding Coil:WaterHeating:AirToWaterHeatPump:* object, or CoilSystem:IntegratedHeatPump:AirSource.
   N4 , \field Minimum Inlet Air Temperature for Compressor Operation
        \type real
        \units C

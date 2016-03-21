@@ -197,7 +197,6 @@ namespace IntegratedHeatPump {
 
 		// Default Constructor
 		IntegratedHeatPumpData() :
-<<<<<<< HEAD
 			SCCoilIndex( 0 ),
 			SHCoilIndex( 0 ),
 			SCWHCoilIndex( 0 ),
@@ -242,57 +241,10 @@ namespace IntegratedHeatPump {
 			IDFanID( 0 ),
 			IDFanPlace( 0 ),
 			ODAirInletNodeNum( 0 ), // oudoor coil inlet Nod
-			ODAirOutletNodeNum( 0 ) // oudoor coil outlet Nod
-=======
-			SCCoilIndex(0),
-			SHCoilIndex(0),
-			SCWHCoilIndex(0),
-			DWHCoilIndex(0),
-			SCDWHCoolCoilIndex(0),
-			SCDWHWHCoilIndex(0),
-			SHDWHHeatCoilIndex(0),
-			SHDWHWHCoilIndex(0),
-			AirCoolInletNodeNum(0),
-			AirHeatInletNodeNum(0),
-			AirOutletNodeNum(0),
-			WaterInletNodeNum(0),
-			WaterOutletNodeNum(0),
-			WaterTankoutNod(0),
-			ODAirInletNodeNum(0), // oudoor coil inlet Nod
-			ODAirOutletNodeNum(0), // oudoor coil outlet Nod
-			ModeMatchSCWH(0),
-			MinSpedSCWH(1),
-			MinSpedSCDWH(1),
-			MinSpedSHDWH(1),
-			TindoorOverCoolAllow(0.0),
-			TambientOverCoolAllow(0.0),
-			TindoorWHHighPriority(0.0),
-			TambientWHHighPriority(0.0),
-			WaterVolSCDWH(0.0),
-			TimeLimitSHDWH(0.0),
-			WHtankType(0),
-			WHtankID(0),
-			IsWHCallAvail(false),
-			CheckWHCall(false),
-			CurMode(0),
-			ControlledZoneTemp(0),
-			WaterFlowAccumVol(0),
-			SHDWHRunTime(0),
-			NodeConnected(false),
-			TotalHeatingEnergyRate(0),
-			CoolVolFlowScale(0),
-			HeatVolFlowScale(0),
-			MaxHeatAirMassFlow(0),
-			MaxHeatAirVolFlow(0),
-			MaxCoolAirMassFlow(0),
-			MaxCoolAirVolFlow(0),
-			IHPCoilsSized(false),
-			IDFanID(0),
-			IDFanPlace(0),
-			TankSourceWaterMassFlowRate(0),
-			AirFlowSavInWaterLoop(0),
-			AirFlowSavInAirLoop(0)
->>>>>>> origin/ASIHPdev3
+			ODAirOutletNodeNum( 0 ), // oudoor coil outlet Nod
+			TankSourceWaterMassFlowRate( 0 ),
+			AirFlowSavInWaterLoop( 0 ),
+			AirFlowSavInAirLoop( 0 )
 		{}
 
 	};
