@@ -752,31 +752,19 @@ namespace VariableSpeedCoils {
 		int const CyclingScheme // Continuous fan OR cycling compressor
 	);
 
-<<<<<<< HEAD
 	void SetAirNodes(
 		std::string const & CoilName, // must match coil names for the coil type
 		bool & ErrorsFound, // set to true if problem
 		int const InNode,
 		int const OutNode
 	); 
-=======
-	void SetAirNodes(std::string const & CoilName, // must match coil names for the coil type
-		bool & ErrorsFound, // set to true if problem
-		int const InNode,
-		int const OutNode
-		); 
->>>>>>> origin/ASIHPdev3
 
 	void SetWaterNodes(
 		std::string const & CoilName, // must match coil names for the coil type
 		bool & ErrorsFound, // set to true if problem
 		int const InNode,
 		int const OutNode
-<<<<<<< HEAD
 	); 
-=======
-		); 
->>>>>>> origin/ASIHPdev3
 
 } // VariableSpeedCoils
 
